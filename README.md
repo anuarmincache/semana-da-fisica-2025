@@ -22,6 +22,7 @@ Minicurso teórico-prático no **Google Colab**: pipeline verificável de DRX + 
 | **Slides por módulo** | [Índice](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/index.html) |
 | **Notebook da aula** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/220719/semana-da-fisica-2025/blob/main/notebooks/Minicurso_IA_Cientifica_DRX.ipynb) |
 | Manual | [docs/MANUAL.md](docs/MANUAL.md) |
+| **Guia célula por célula** | [Abrir no navegador](https://raw.githack.com/220719/semana-da-fisica-2025/main/docs/guia-celulas.html) |
 
 Não abra os arquivos `.html` na página de código do GitHub (`blob/main/slides/...`): isso mostra o fonte, não o slideshow. Use os links da tabela.
 
@@ -58,6 +59,7 @@ Setas do teclado avançam os slides; `F` é tela cheia.
 ├── data/Nd_10.csv … Nd_50.csv
 ├── slides/          # Reveal.js, um HTML por módulo + apresentação
 ├── docs/MANUAL.md
+├── docs/guia-celulas.html
 ├── tools/           # geradores do notebook e dos slides
 ├── requirements.txt
 └── README.md
@@ -86,7 +88,7 @@ No Colab, o equivalente é uma célula `!git clone ...` — detalhes no manual.
 - Gráficos: waterfall, mapa 2θ × dopagem, correlação/RMSE, histograma, boxplot/violin, WH, métricas em barras; PNGs em `figuras/` ao rodar o notebook.
 - LLM só interpreta um JSON produzido pelo pipeline.
 
-O notebook legado `notebooks/DRX_Analises.ipynb` (se presente) é histórico.
+O notebook da edição anterior foi movido para `legado/DRX_Analises.ipynb` (apenas histórico; **não use na aula**).
 
 ---
 

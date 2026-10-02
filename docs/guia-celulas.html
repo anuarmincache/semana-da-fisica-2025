@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do notebook — IA Científica para DRX</title>
+<meta name="description" content="Explicação célula por célula do notebook do minicurso de IA Científica para Difração de Raios X (Semana da Física 2026, UEM).">
+<style>
+:root{
+  --bg:#fbfaf7; --surface:#ffffff; --ink:#1d2330; --muted:#5b6475; --line:#e3e0d8;
+  --accent:#0b5fa5; --accent-soft:#e6f0f9;
+  --code-bg:#f3f1ec; --code-ink:#2b2f3a;
+  --ok:#0a7d5a; --ok-soft:#e3f4ee;
+  --warn:#9a5b00; --warn-soft:#fdf1dc;
+  --talk:#5a3fa0; --talk-soft:#eeeaf8;
+  --screen:#1d4e63; --screen-soft:#e4f1f5;
+  --shadow:0 1px 2px rgba(20,25,40,.06),0 4px 14px rgba(20,25,40,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151c; --surface:#1a1e28; --ink:#e7e9ee; --muted:#9aa3b5; --line:#2b3140;
+    --accent:#6db3f2; --accent-soft:#17283a;
+    --code-bg:#12161f; --code-ink:#d7dbe5;
+    --ok:#52d1a6; --ok-soft:#10261f;
+    --warn:#f0b35a; --warn-soft:#2c2212;
+    --talk:#b7a2f2; --talk-soft:#221c36;
+    --screen:#7cc4de; --screen-soft:#12262e;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151c; --surface:#1a1e28; --ink:#e7e9ee; --muted:#9aa3b5; --line:#2b3140;
+  --accent:#6db3f2; --accent-soft:#17283a;
+  --code-bg:#12161f; --code-ink:#d7dbe5;
+  --ok:#52d1a6; --ok-soft:#10261f;
+  --warn:#f0b35a; --warn-soft:#2c2212;
+  --talk:#b7a2f2; --talk-soft:#221c36;
+  --screen:#7cc4de; --screen-soft:#12262e;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+code{background:var(--code-bg);color:var(--code-ink);padding:.08em .38em;border-radius:5px;font-size:.88em}
+pre{background:var(--code-bg);color:var(--code-ink);padding:14px 16px;border-radius:10px;overflow-x:auto;
+  font-size:.84rem;line-height:1.55;border:1px solid var(--line);margin:10px 0}
+pre code{background:none;padding:0;font-size:inherit}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .4em;font-size:.85em}
+h1,h2,h3,h4{line-height:1.25;margin:0}
+.wrap{max-width:940px;margin:0 auto;padding:0 16px}
+
+/* barra superior */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;gap:8px;align-items:center;padding-top:9px;padding-bottom:9px}
+.topbar .links{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.topbar .links::-webkit-scrollbar{display:none}
+.topbar .actions{display:flex;gap:6px;flex:none}
+.topbar a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:.84rem;padding:5px 11px;border-radius:999px;border:1px solid transparent}
+.topbar a:hover{color:var(--ink);border-color:var(--line);background:var(--surface)}
+.topbar button{font:inherit;font-size:.82rem;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.topbar button:hover{color:var(--ink);background:var(--surface)}
+
+/* cabeçalho */
+header.hero{padding:44px 0 26px}
+.eyebrow{color:var(--accent);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+header.hero h1{font-size:clamp(1.7rem,4.2vw,2.5rem);margin:8px 0 12px;letter-spacing:-.01em}
+header.hero p.lead{font-size:1.08rem;color:var(--muted);max-width:68ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{font-size:.8rem;color:var(--muted);border:1px solid var(--line);background:var(--surface);padding:3px 11px;border-radius:999px}
+
+.scene{margin:28px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:#e8eef4}
+.scene svg{display:block;width:100%;height:auto}
+.scene figcaption{padding:9px 16px;font-size:.8rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line)}
+/* blocos gerais */
+section.block{margin:34px 0}
+section.block>h2{font-size:1.45rem;margin-bottom:6px;letter-spacing:-.005em}
+section.block>p.sub{color:var(--muted);margin:0 0 16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
+.legend-grid div{border-radius:10px;padding:10px 13px;font-size:.92rem}
+.legend-grid b{display:block;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+
+/* fluxo de dados */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px 0;margin:14px 0}
+.flow .step{flex:1 1 130px;min-width:130px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;position:relative;margin-right:22px}
+.flow .step:last-child{margin-right:0}
+.flow .step:not(:last-child)::after{content:"→";position:absolute;right:-19px;top:50%;transform:translateY(-50%);color:var(--accent);font-weight:700}
+.flow .step b{display:block;font-size:.9rem}
+.flow .step span{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.flow .step code{font-size:.74rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--code-bg)}
+tr:last-child td{border-bottom:none}
+
+/* módulos */
+.module{margin:56px 0 18px;padding-top:6px}
+.module .tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 11px;border-radius:999px}
+.module h2{font-size:1.65rem;margin:10px 0 6px;letter-spacing:-.01em}
+.module p.sub{color:var(--muted);margin:0;max-width:70ch}
+
+/* célula */
+article.cell{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:16px 0;box-shadow:var(--shadow);overflow:hidden}
+article.cell>header{display:flex;gap:12px;align-items:flex-start;padding:15px 20px 6px}
+.num{flex:none;min-width:2.5rem;text-align:center;font-weight:700;font-size:.9rem;color:var(--accent);background:var(--accent-soft);border-radius:9px;padding:3px 8px;margin-top:2px}
+article.cell h3{font-size:1.12rem}
+.kind{display:inline-block;margin-left:8px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:1px 7px;vertical-align:middle}
+.kind.code{color:var(--ok);background:var(--ok-soft)}
+.kind.text{color:var(--muted);background:var(--code-bg)}
+.cell .body{padding:2px 20px 18px}
+.cell .body p{margin:.55em 0}
+.cell .body ul,.cell .body ol{margin:.45em 0 .55em;padding-left:1.35em}
+.cell .body li{margin:.28em 0}
+.vars{font-size:.84rem;color:var(--muted);margin:2px 0 8px}
+.vars code{font-size:.8rem}
+.box{border-radius:11px;padding:11px 15px;margin:12px 0;font-size:.95rem}
+.box>b.t{display:block;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.box p{margin:.3em 0}.box ul,.box ol{margin:.3em 0}
+.box.screen{background:var(--screen-soft)}.box.screen>b.t{color:var(--screen)}
+.box.talk{background:var(--talk-soft)}.box.talk>b.t{color:var(--talk)}
+.box.warn{background:var(--warn-soft)}.box.warn>b.t{color:var(--warn)}
+.box.ok{background:var(--ok-soft)}.box.ok>b.t{color:var(--ok)}
+details{margin:10px 0}
+details>summary{cursor:pointer;color:var(--accent);font-size:.9rem;font-weight:600;padding:2px 0}
+details[open]>summary{margin-bottom:4px}
+.eq{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;text-align:center;font-size:1.04rem;overflow-x:auto;font-family:Georgia,"Times New Roman",serif}
+.eq small{display:block;color:var(--muted);font-family:system-ui,sans-serif;font-size:.78rem;margin-top:3px}
+.footer{margin:60px 0 40px;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line);padding-top:18px}
+.faq dt{font-weight:600;margin-top:14px}
+.faq dd{margin:3px 0 0;color:var(--ink)}
+@media (max-width:640px){
+  article.cell>header{padding:13px 14px 4px}.cell .body{padding:2px 14px 16px}
+  .flow .step{margin-right:0;flex-basis:100%}.flow .step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-17px;transform:translateX(-50%)}
+  .flow{gap:20px 0}
+}
+@media print{
+  .topbar{display:none}body{background:#fff;color:#000;font-size:11pt}
+  article.cell,.panel{box-shadow:none;break-inside:avoid}
+  details>*{display:block}details>summary{display:none}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Navegação por módulos">
+  <div class="wrap">
+    <div class="links">
+      <a href="#comousar">Como usar</a>
+      <a href="#fluxo">Fluxo de dados</a>
+      <a href="#m1">Módulo 1</a>
+      <a href="#m2">Módulo 2</a>
+      <a href="#m3">Módulo 3</a>
+      <a href="#m4">Módulo 4</a>
+      <a href="#m5">Módulo 5</a>
+      <a href="#m6">Módulo 6</a>
+      <a href="#m7">Módulo 7</a>
+      <a href="#atencao">Pontos delicados</a>
+      <a href="#faq">Dúvidas</a>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnAll">Abrir códigos</button>
+      <button type="button" id="btnTheme" aria-label="Alternar tema claro/escuro">Tema</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Semana da Física 2026 · UEM · Guia do ministrante</div>
+    <h1>O que cada célula do notebook faz</h1>
+    <p class="lead">Explicação detalhada, na ordem do notebook <code>Minicurso_IA_Cientifica_DRX.ipynb</code>: o que o código calcula, o que aparece na tela, como falar sobre isso com a turma e onde estão as armadilhas. Sistema estudado: Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub>, x = 10% a 50%.</p>
+    <div class="meta">
+      <span class="chip">54 células · 18 de texto · 36 de código</span>
+      <span class="chip">7 módulos</span>
+      <span class="chip">Arquivo único · funciona offline</span>
+    </div>
+    <figure class="scene">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="sceneT sceneD">
+  <title id="sceneT">Pesquisador e assistente de IA analisando um difratograma</title>
+  <desc id="sceneD">Ilustração de um laboratório experimental: um pesquisador de jaleco ao lado de um difratômetro de raios X e de um notebook que mostra um difratograma, conversando com um pequeno robô assistente de inteligência artificial.</desc>
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d7e1ea"/><stop offset="1" stop-color="#eef3f7"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8c3ce"/><stop offset="1" stop-color="#8e9cab"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc4ee"/><stop offset="1" stop-color="#e3f3ff"/></linearGradient>
+    <linearGradient id="benchTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef1f5"/><stop offset="1" stop-color="#b7c0cb"/></linearGradient>
+    <linearGradient id="cab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa6b4"/><stop offset="1" stop-color="#76828f"/></linearGradient>
+    <linearGradient id="instr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6f8fa"/><stop offset="1" stop-color="#cdd5de"/></linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dfe6ee"/><stop offset=".45" stop-color="#fbfcfd"/><stop offset="1" stop-color="#d3dbe5"/></linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0c4a2"/><stop offset="1" stop-color="#d9a07c"/></linearGradient>
+    <linearGradient id="bot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9c4d0"/></linearGradient>
+    <linearGradient id="lightcone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff8e1" stop-opacity=".55"/><stop offset="1" stop-color="#fff8e1" stop-opacity="0"/></linearGradient>
+    <radialGradient id="screenGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5ee7ff" stop-opacity=".45"/><stop offset="1" stop-color="#5ee7ff" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="drop" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#1a2433" flood-opacity=".28"/></filter>
+    <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <!-- parede e piso -->
+  <rect width="960" height="372" fill="url(#wall)"/>
+  <rect y="360" width="960" height="12" fill="#c5cfda"/>
+  <rect y="372" width="960" height="68" fill="url(#floor)"/>
+  <polygon points="360,0 600,0 700,300 260,300" fill="url(#lightcone)"/>
+  <rect x="370" y="0" width="220" height="9" rx="3" fill="#f7f9fb"/>
+  <rect x="380" y="9" width="200" height="4" rx="2" fill="#fffdf2"/>
+
+  <!-- janela -->
+  <g filter="url(#drop)">
+    <rect x="48" y="38" width="196" height="156" rx="4" fill="#eef2f6" stroke="#b5c1ce" stroke-width="2"/>
+    <rect x="58" y="48" width="176" height="136" fill="url(#sky)"/>
+    <path d="M58 150 L58 132 L84 132 L84 118 L108 118 L108 136 L134 136 L134 108 L160 108 L160 128 L190 128 L190 140 L234 140 L234 184 L58 184 Z" fill="#9db3c8" opacity=".55"/>
+    <path d="M58 168 Q110 150 150 168 T234 160 L234 184 L58 184 Z" fill="#7fae86" opacity=".7"/>
+    <line x1="146" y1="48" x2="146" y2="184" stroke="#eef2f6" stroke-width="5"/>
+    <line x1="58" y1="116" x2="234" y2="116" stroke="#eef2f6" stroke-width="5"/>
+    <rect x="42" y="194" width="208" height="8" rx="3" fill="#dfe6ed" stroke="#b5c1ce"/>
+  </g>
+
+  <!-- pôster com difratograma -->
+  <g filter="url(#drop)">
+    <line x1="380" y1="30" x2="415" y2="55" stroke="#8f9aa8" stroke-width="1.2"/>
+    <line x1="460" y1="30" x2="425" y2="55" stroke="#8f9aa8" stroke-width="1.2"/>
+    <rect x="335" y="55" width="170" height="104" rx="4" fill="#ffffff" stroke="#9aa7b5" stroke-width="3"/>
+    <rect x="345" y="64" width="150" height="86" fill="#f7fafc"/>
+    <line x1="356" y1="138" x2="486" y2="138" stroke="#7b8794" stroke-width="1.2"/>
+    <line x1="356" y1="138" x2="356" y2="76" stroke="#7b8794" stroke-width="1.2"/>
+    <path d="M358 136 L372 135 L378 118 L384 135 L402 134 L410 92 L417 134 L432 133 L438 118 L444 133 L460 132 L466 122 L472 132 L486 131" fill="none" stroke="#0b5fa5" stroke-width="1.8" stroke-linejoin="round"/>
+    <text x="421" y="148" font-size="7.5" fill="#5b6675" text-anchor="middle" font-family="system-ui,Arial,sans-serif">2θ (°)</text>
+    <text x="365" y="80" font-size="8" fill="#0b5fa5" font-family="system-ui,Arial,sans-serif" font-weight="700">DRX</text>
+  </g>
+
+  <!-- prateleiras à direita -->
+  <g filter="url(#drop)" transform="translate(60 0)">
+    <rect x="640" y="132" width="240" height="7" rx="2" fill="#a9825a"/>
+    <rect x="640" y="66" width="240" height="7" rx="2" fill="#a9825a"/>
+    <!-- frascos Erlenmeyer -->
+    <path d="M664 132 L675 100 L675 88 L689 88 L689 100 L700 132 Z" fill="#9fd8e8" opacity=".75" stroke="#5f9fb3"/>
+    <path d="M668 128 L700 128 L695 116 L672 116 Z" fill="#3aa6c6" opacity=".6"/>
+    <path d="M716 132 L725 108 L725 98 L737 98 L737 108 L746 132 Z" fill="#f2d77b" opacity=".8" stroke="#b49a3a"/>
+    <!-- frascos de reagente -->
+    <rect x="768" y="96" width="30" height="36" rx="5" fill="#8a5a3b" opacity=".92"/>
+    <rect x="776" y="86" width="14" height="12" rx="2" fill="#5b3a26"/>
+    <rect x="772" y="108" width="22" height="12" rx="1" fill="#f1ede4"/>
+    <rect x="812" y="100" width="28" height="32" rx="5" fill="#d9e2ea" opacity=".9" stroke="#9aa9b8"/>
+    <rect x="819" y="91" width="14" height="11" rx="2" fill="#7a8794"/>
+    <rect x="816" y="112" width="20" height="10" rx="1" fill="#ffffff"/>
+    <rect x="856" y="104" width="22" height="28" rx="4" fill="#78b88a" opacity=".85"/>
+    <rect x="860" y="96" width="14" height="10" rx="2" fill="#4a7a57"/>
+    <!-- caixas / pastas na prateleira de cima -->
+    <rect x="656" y="30" width="26" height="36" rx="2" fill="#4c78b0"/>
+    <rect x="684" y="36" width="22" height="30" rx="2" fill="#d4a24a"/>
+    <rect x="708" y="26" width="26" height="40" rx="2" fill="#7e9a7a"/>
+    <rect x="780" y="40" width="48" height="26" rx="3" fill="#e9eef3" stroke="#9aa9b8"/>
+  </g>
+
+  <!-- bancada -->
+  <rect y="372" width="960" height="8" fill="#1a2433" opacity=".18"/>
+  <rect y="310" width="960" height="64" fill="url(#cab)"/>
+  <g stroke="#6b7684" stroke-width="2" opacity=".85">
+    <line x1="240" y1="312" x2="240" y2="372"/><line x1="480" y1="312" x2="480" y2="372"/>
+    <line x1="720" y1="312" x2="720" y2="372"/>
+  </g>
+  <g fill="#cdd5de"><rect x="224" y="330" width="4" height="16" rx="2"/><rect x="252" y="330" width="4" height="16" rx="2"/><rect x="464" y="330" width="4" height="16" rx="2"/><rect x="492" y="330" width="4" height="16" rx="2"/><rect x="704" y="330" width="4" height="16" rx="2"/><rect x="732" y="330" width="4" height="16" rx="2"/></g>
+  <rect y="294" width="960" height="18" fill="url(#benchTop)"/>
+  <rect y="294" width="960" height="2" fill="#ffffff" opacity=".8"/>
+
+  <!-- difratômetro de raios X -->
+  <g filter="url(#drop)">
+    <rect x="66" y="180" width="250" height="114" rx="9" fill="url(#instr)"/>
+    <rect x="66" y="180" width="250" height="18" rx="9" fill="#b9c3ce"/>
+    <rect x="66" y="190" width="250" height="3" fill="#8f9baa" opacity=".6"/>
+    <!-- janela com vidro plumbífero -->
+    <rect x="86" y="208" width="170" height="76" rx="7" fill="#1c2430"/>
+    <rect x="90" y="212" width="162" height="68" rx="5" fill="#f4c542" opacity=".28"/>
+    <rect x="90" y="212" width="162" height="68" rx="5" fill="none" stroke="#caa534" stroke-width="1.4" opacity=".8"/>
+    <!-- goniômetro -->
+    <circle cx="171" cy="262" r="30" fill="none" stroke="#5b6674" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <circle cx="171" cy="262" r="8" fill="#8a96a5"/><circle cx="171" cy="262" r="3" fill="#3b4551"/>
+    <line x1="171" y1="262" x2="125" y2="232" stroke="#4a5461" stroke-width="3" stroke-linecap="round"/>
+    <rect x="108" y="222" width="22" height="13" rx="3" fill="#2b333e" transform="rotate(-32 119 228)"/>
+    <line x1="171" y1="262" x2="222" y2="238" stroke="#4a5461" stroke-width="3" stroke-linecap="round"/>
+    <rect x="212" y="228" width="22" height="13" rx="3" fill="#2b333e" transform="rotate(-25 223 234)"/>
+    <path d="M128 233 L168 258" stroke="#ff6b6b" stroke-width="1.2" stroke-dasharray="2 2" opacity=".85"/>
+    <path d="M174 258 L214 236" stroke="#ff6b6b" stroke-width="1.2" stroke-dasharray="2 2" opacity=".85"/>
+    <!-- painel lateral -->
+    <rect x="266" y="208" width="40" height="76" rx="5" fill="#dfe5ec" stroke="#aab5c1"/>
+    <rect x="271" y="214" width="30" height="18" rx="2" fill="#0f1722"/>
+    <path d="M273 226 L277 224 L280 219 L283 226 L287 225 L290 222 L299 226" fill="none" stroke="#5ee7ff" stroke-width="1"/>
+    <circle cx="278" cy="244" r="3" fill="#35c47a" filter="url(#glow)"/>
+    <circle cx="289" cy="244" r="3" fill="#f0b23a"/>
+    <rect x="272" y="256" width="28" height="9" rx="3" fill="#c13b3b"/>
+    <rect x="272" y="270" width="28" height="8" rx="3" fill="#b3bdc9"/>
+    <!-- adesivo de radiação -->
+    <polygon points="76,206 88,206 82,194" fill="#f6c935" stroke="#2b333e" stroke-width="1.2" stroke-linejoin="round"/>
+    <text x="82" y="204.4" font-size="6.5" font-weight="700" text-anchor="middle" fill="#2b333e" font-family="system-ui,Arial,sans-serif">!</text>
+    <rect x="80" y="286" width="16" height="8" rx="2" fill="#6b7684"/><rect x="286" y="286" width="16" height="8" rx="2" fill="#6b7684"/>
+  </g>
+  <path d="M316 270 C340 280 346 292 362 292" fill="none" stroke="#2b333e" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- notebook com o difratograma -->
+  <ellipse cx="443" cy="248" rx="120" ry="70" fill="url(#screenGlow)"/>
+  <g filter="url(#drop)">
+    <rect x="364" y="200" width="158" height="92" rx="7" fill="#1b222b"/>
+    <rect x="372" y="207" width="142" height="78" rx="3" fill="#0e1621"/>
+    <g stroke="#27374a" stroke-width=".7"><line x1="382" y1="215" x2="382" y2="277"/><line x1="382" y1="277" x2="508" y2="277"/><line x1="382" y1="262" x2="508" y2="262"/><line x1="382" y1="247" x2="508" y2="247"/><line x1="382" y1="232" x2="508" y2="232"/></g>
+    <path d="M382 275 L392 274 L397 262 L402 274 L418 273 L424 258 L428 273 L436 272 L441 226 L446 272 L458 271 L463 252 L468 271 L480 270 L485 259 L490 270 L506 269" fill="none" stroke="#5ee7ff" stroke-width="1.7" stroke-linejoin="round" filter="url(#glow)"/>
+    <circle cx="441" cy="226" r="2.6" fill="#ff9a3d"/><circle cx="463" cy="252" r="2.2" fill="#ff9a3d"/><circle cx="424" cy="258" r="2.2" fill="#ff9a3d"/>
+    <text x="445" y="283" font-size="6" fill="#7a8da3" text-anchor="middle" font-family="system-ui,Arial,sans-serif">2θ (°)</text>
+    <text x="387" y="214" font-size="6.5" fill="#9fb3c8" font-family="system-ui,Arial,sans-serif">Nd 20% · FWHM · Scherrer</text>
+    <path d="M346 294 L540 294 L532 302 L354 302 Z" fill="#cfd6df"/>
+    <rect x="346" y="292" width="194" height="4" rx="2" fill="#e9edf2"/>
+    <rect x="426" y="296" width="34" height="3" rx="1.5" fill="#aab4bf"/>
+  </g>
+
+  <!-- cartão holográfico acima do robô -->
+  <g>
+    <path d="M610 142 L610 132" stroke="#5ee7ff" stroke-width="1.5" stroke-dasharray="2 3" filter="url(#glow)"/>
+    <rect x="548" y="58" width="142" height="74" rx="10" fill="#5ee7ff" fill-opacity=".14" stroke="#5ee7ff" stroke-opacity=".85" stroke-width="1.3" filter="url(#glow)"/>
+    <text x="560" y="75" font-size="9" fill="#0f5f78" font-weight="700" font-family="system-ui,Arial,sans-serif">JSON → relatório</text>
+    <rect x="560" y="83" width="76" height="4" rx="2" fill="#0f5f78" opacity=".55"/>
+    <rect x="560" y="93" width="60" height="4" rx="2" fill="#0f5f78" opacity=".4"/>
+    <rect x="560" y="103" width="68" height="4" rx="2" fill="#0f5f78" opacity=".4"/>
+    <rect x="560" y="113" width="44" height="4" rx="2" fill="#0f5f78" opacity=".3"/>
+    <g fill="#0f5f78" opacity=".75"><rect x="650" y="106" width="8" height="14" rx="1"/><rect x="662" y="96" width="8" height="24" rx="1"/><rect x="674" y="88" width="8" height="32" rx="1"/></g>
+  </g>
+
+  <!-- robô assistente de IA -->
+  <ellipse cx="610" cy="297" rx="46" ry="5" fill="#1a2433" opacity=".25"/>
+  <g transform="translate(610 296)" filter="url(#drop)">
+    <rect x="-36" y="-15" width="72" height="15" rx="7.5" fill="#39424f"/>
+    <circle cx="-23" cy="-7.5" r="7" fill="#232a33"/><circle cx="23" cy="-7.5" r="7" fill="#232a33"/>
+    <circle cx="-23" cy="-7.5" r="2.4" fill="#8a96a5"/><circle cx="23" cy="-7.5" r="2.4" fill="#8a96a5"/>
+    <!-- braço esquerdo: aponta para a tela -->
+    <path d="M-28 -70 L-52 -58 L-68 -84" fill="none" stroke="#7d8a99" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M-28 -70 L-52 -58 L-68 -84" fill="none" stroke="#dbe2ea" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="-70" cy="-88" r="7.5" fill="#aeb9c5" stroke="#7d8a99"/>
+    <!-- tronco -->
+    <rect x="-31" y="-84" width="62" height="72" rx="19" fill="url(#bot)" stroke="#a5b1be"/>
+    <rect x="-17" y="-64" width="34" height="24" rx="6" fill="#0b1320"/>
+    <g stroke="#5ee7ff" stroke-width="1.6" stroke-linecap="round" filter="url(#glow)"><line x1="-11" y1="-55" x2="5" y2="-55"/><line x1="-11" y1="-49" x2="11" y2="-49"/><line x1="-11" y1="-43" x2="1" y2="-43"/></g>
+    <circle cx="11" cy="-56" r="2.2" fill="#35c47a" filter="url(#glow)"/>
+    <!-- braço direito com tablet -->
+    <path d="M28 -70 L46 -50 L38 -36" fill="none" stroke="#7d8a99" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M28 -70 L46 -50 L38 -36" fill="none" stroke="#dbe2ea" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="34" y="-66" width="32" height="24" rx="3" fill="#10161f" stroke="#cdd5de" stroke-width="2" transform="rotate(-8 50 -54)"/>
+    <g transform="rotate(-8 50 -54)" fill="#5ee7ff" opacity=".85"><rect x="39" y="-60" width="16" height="2.4" rx="1"/><rect x="39" y="-54" width="22" height="2.4" rx="1"/><rect x="39" y="-48" width="12" height="2.4" rx="1"/></g>
+    <circle cx="38" cy="-36" r="6" fill="#aeb9c5" stroke="#7d8a99"/>
+    <!-- pescoço e cabeça -->
+    <rect x="-8" y="-95" width="16" height="13" rx="3" fill="#8a96a5"/>
+    <rect x="-36" y="-122" width="6" height="20" rx="3" fill="#6b7787"/><rect x="30" y="-122" width="6" height="20" rx="3" fill="#6b7787"/>
+    <rect x="-31" y="-142" width="62" height="50" rx="19" fill="url(#bot)" stroke="#a5b1be"/>
+    <rect x="-24" y="-134" width="48" height="32" rx="13" fill="#0b1320"/>
+    <ellipse cx="-9.5" cy="-118" rx="5.6" ry="7.4" fill="#5ee7ff" filter="url(#glow)"/>
+    <ellipse cx="9.5" cy="-118" rx="5.6" ry="7.4" fill="#5ee7ff" filter="url(#glow)"/>
+    <ellipse cx="-8" cy="-120" rx="1.8" ry="2.4" fill="#ffffff" opacity=".9"/><ellipse cx="11" cy="-120" rx="1.8" ry="2.4" fill="#ffffff" opacity=".9"/>
+    <path d="M-6 -107 Q0 -103 6 -107" fill="none" stroke="#5ee7ff" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="0" y1="-142" x2="0" y2="-156" stroke="#8a96a5" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="0" cy="-159" r="5" fill="#ff8a3d" filter="url(#glow)"/>
+  </g>
+
+  <!-- pesquisador (atrás da bancada) -->
+  <g filter="url(#drop)">
+    <!-- tronco / jaleco -->
+    <path d="M718 302 L724 204 Q730 170 762 161 L822 161 Q852 170 858 204 L864 302 Z" fill="url(#coat)" stroke="#c4ccd6"/>
+    <path d="M762 161 L790 208 L776 162 Z" fill="#e8edf3" stroke="#c4ccd6"/>
+    <path d="M822 161 L792 208 L806 162 Z" fill="#e8edf3" stroke="#c4ccd6"/>
+    <path d="M776 162 L791 205 L806 162 Z" fill="#7fa6d6"/>
+    <path d="M776 162 L791 190 L806 162" fill="none" stroke="#6590c4" stroke-width="1"/>
+    <rect x="826" y="244" width="24" height="22" rx="2" fill="#eef2f6" stroke="#c4ccd6"/>
+    <rect x="832" y="238" width="3" height="16" rx="1.5" fill="#3a6fb5"/><rect x="838" y="239" width="3" height="15" rx="1.5" fill="#c0392b"/>
+    <rect x="740" y="226" width="22" height="13" rx="2" fill="#ffffff" stroke="#b5c1ce"/>
+    <line x1="744" y1="231" x2="758" y2="231" stroke="#8c99a8" stroke-width="1.4"/><line x1="744" y1="235" x2="753" y2="235" stroke="#8c99a8" stroke-width="1.4"/>
+    <!-- pescoço -->
+    <path d="M779 138 L801 138 L803 166 L777 166 Z" fill="#cf9674"/>
+    <!-- cabeça -->
+    <ellipse cx="790" cy="112" rx="29" ry="35" fill="url(#skin)"/>
+    <ellipse cx="819" cy="118" rx="5" ry="8.5" fill="#d6a07f"/>
+    <path d="M759 106 Q757 70 792 69 Q826 71 821 108 Q815 90 794 90 Q771 90 759 106 Z" fill="#2f2420"/>
+    <path d="M761 121 L755 132 L763 134" fill="none" stroke="#c48b69" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M764 108 Q773 104 782 107" fill="none" stroke="#2f2420" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="774" cy="113" rx="2.8" ry="3.2" fill="#2a2320"/>
+    <rect x="763" y="104" width="22" height="16" rx="6" fill="#ffffff" fill-opacity=".14" stroke="#2a3340" stroke-width="1.8"/>
+    <line x1="785" y1="111" x2="814" y2="112" stroke="#2a3340" stroke-width="1.6"/>
+    <path d="M767 136 Q774 140 782 136" fill="none" stroke="#9a5a45" stroke-width="2" stroke-linecap="round"/>
+    <!-- braço esquerdo do pesquisador (na bancada) -->
+    <path d="M740 190 L714 248 L692 288" fill="none" stroke="#c4ccd6" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M740 190 L714 248 L692 288" fill="none" stroke="#f7f9fb" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M692 288 L678 292" stroke="#d9a07c" stroke-width="13" stroke-linecap="round"/>
+    <!-- braço direito -->
+    <path d="M846 192 L862 250 L846 288" fill="none" stroke="#c4ccd6" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M846 192 L862 250 L846 288" fill="none" stroke="#e9eef3" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="838" cy="290" r="8" fill="#d9a07c"/>
+  </g>
+  <!-- caderno de laboratório e caneta na bancada -->
+  <g filter="url(#drop)">
+    <path d="M776 296 L836 296 L842 289 L782 289 Z" fill="#f6efe0" stroke="#c9bfa5"/>
+    <path d="M776 296 L836 296 L836 300 L776 300 Z" fill="#cdbf9e"/>
+    <line x1="790" y1="293" x2="826" y2="293" stroke="#b4a98c" stroke-width=".8"/>
+    <rect x="800" y="290" width="26" height="2.6" rx="1.3" fill="#2f5d9e" transform="rotate(-14 813 291)"/>
+  </g>
+  <!-- reflexos suaves no chão -->
+  <ellipse cx="480" cy="398" rx="340" ry="14" fill="#ffffff" opacity=".18" filter="url(#blur6)"/>
+</svg>
+      <figcaption>Ilustração: pesquisador e assistente de IA analisando um difratograma. O robô interpreta os números; quem calcula e confere é o pesquisador.</figcaption>
+    </figure>
+
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="block" id="comousar">
+  <h2>Como usar este guia</h2>
+  <p class="sub">Abra ao lado do Colab. Cada cartão corresponde a uma célula, na mesma ordem.</p>
+  <div class="panel">
+    <p style="margin-top:0"><b>Numeração.</b> O número no canto de cada cartão conta <em>todas</em> as células do notebook, de cima para baixo, incluindo as de texto. Ele não é o número <code>[40]</code> que o Colab mostra ao lado do código (esse conta quantas vezes você executou células e muda a cada rodada).</p>
+    <p><b>Cada cartão tem até cinco partes:</b></p>
+    <div class="legend-grid">
+      <div style="background:var(--accent-soft)"><b style="color:var(--accent)">O que faz</b>Resumo curto e o passo a passo do código.</div>
+      <div style="background:var(--screen-soft)"><b style="color:var(--screen)">Na tela</b>O que os alunos devem ver depois de executar.</div>
+      <div style="background:var(--talk-soft)"><b style="color:var(--talk)">Como explicar</b>Sugestão de fala, a física por trás e perguntas para a turma.</div>
+      <div style="background:var(--warn-soft)"><b style="color:var(--warn)">Atenção</b>Armadilhas, limitações e perguntas difíceis que podem surgir.</div>
+      <div style="background:var(--ok-soft)"><b style="color:var(--ok)">Variáveis</b>O que a célula cria e o que ela precisa de células anteriores.</div>
+    </div>
+    <p style="margin-bottom:0"><b>Regra de ouro na aula:</b> as células dependem umas das outras (<code>patterns</code> → <code>processed</code> → <code>features</code> → …). Se uma falhar, as seguintes quebram. Peça aos alunos que <em>não pulem</em> nenhuma e, se necessário, usem <em>Ambiente de execução → Executar tudo</em>.</p>
+  </div>
+</section>
+
+<section class="block" id="fluxo">
+  <h2>O fluxo de dados em uma olhada</h2>
+  <p class="sub">As variáveis principais e quem as produz. É o “mapa” para a turma não se perder.</p>
+  <div class="flow">
+    <div class="step"><b>Leitura</b><span>cria <code>patterns</code></span><span>células 7–19</span></div>
+    <div class="step"><b>Pré-processamento</b><span>cria <code>processed</code></span><span>células 21–25</span></div>
+    <div class="step"><b>Características</b><span>cria <code>features</code>, <code>peak_catalog</code></span><span>células 27–36</span></div>
+    <div class="step"><b>Machine Learning</b><span>cria <code>X</code>, <code>y</code>, <code>metrics_df</code>, <code>preds</code></span><span>células 38–43</span></div>
+    <div class="step"><b>LLM</b><span>cria <code>dossie</code>, <code>relatorio</code></span><span>células 45–50</span></div>
+    <div class="step"><b>Pipeline único</b><span>cria <code>saida</code></span><span>células 52–53</span></div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Variável</th><th>O que contém</th><th>Criada na célula</th></tr></thead>
+      <tbody>
+        <tr><td><code>patterns</code></td><td>Dicionário {10: tabela, 20: tabela, …}. Cada tabela tem <code>two_theta</code> e <code>intensity</code> (dados brutos).</td><td>7</td></tr>
+        <tr><td><code>processed</code></td><td>Mesmas tabelas com colunas novas: <code>smooth</code>, <code>baseline</code>, <code>corrected</code>, <code>normalized</code>.</td><td>21</td></tr>
+        <tr><td><code>features</code> / <code>feature_view</code></td><td>Uma linha por amostra com as características (posição do pico, FWHM, Scherrer, Williamson–Hall…). <code>feature_view</code> é a versão sem as listas de picos.</td><td>27</td></tr>
+        <tr><td><code>peak_catalog</code></td><td>Tabela “longa”: uma linha por pico detectado (36 linhas).</td><td>28</td></tr>
+        <tr><td><code>wh_fits</code></td><td>Resultado da regressão Williamson–Hall de cada amostra.</td><td>28</td></tr>
+        <tr><td><code>X</code>, <code>y</code></td><td>Matriz de entrada (5 amostras × 13 características) e alvo (a % de Nd).</td><td>38</td></tr>
+        <tr><td><code>metrics_df</code>, <code>preds</code></td><td>Métricas dos 4 modelos (ajuste e Leave-One-Out) e suas previsões.</td><td>38</td></tr>
+        <tr><td><code>syn_metrics</code></td><td>Métricas do experimento com dados sintéticos.</td><td>43</td></tr>
+        <tr><td><code>dossie</code></td><td>O JSON com todos os resultados calculados, que o LLM recebe.</td><td>45</td></tr>
+        <tr><td><code>relatorio</code>, <code>fonte</code></td><td>Texto do relatório e a origem dele (<code>local</code>, <code>gemini</code> ou <code>openai</code>).</td><td>46</td></tr>
+        <tr><td><code>saida</code></td><td>Resultado do pipeline completo reexecutado do zero (Módulo 7).</td><td>52</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:26px 0 8px;font-size:1.1rem">Roteiro sugerido de 3 horas</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Tempo</th><th>Bloco</th><th>Células</th></tr></thead>
+      <tbody>
+        <tr><td>0:00–0:20</td><td>Módulo 1 (slides) e abrir o Colab juntos</td><td>1–5</td></tr>
+        <tr><td>0:20–0:45</td><td>Módulo 2 — leitura e figuras</td><td>6–19</td></tr>
+        <tr><td>0:45–1:10</td><td>Módulo 3 — pré-processamento</td><td>20–25</td></tr>
+        <tr><td>1:10–1:40</td><td>Módulo 4 — picos, FWHM, Scherrer, Williamson–Hall</td><td>26–36</td></tr>
+        <tr><td>1:40–2:20</td><td>Módulo 5 — Leave-One-Out e overfitting</td><td>37–43</td></tr>
+        <tr><td>2:20–2:45</td><td>Módulo 6 — relatório (com ou sem API)</td><td>44–50</td></tr>
+        <tr><td>2:45–3:00</td><td>Módulo 7 — pipeline completo e fechamento</td><td>51–54</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== MÓDULO 1 ===================== -->
+<div class="module" id="m1">
+  <span class="tag">Módulo 1</span>
+  <h2>Introdução e ambiente</h2>
+  <p class="sub">Células 1 a 5. Aqui não há cálculo científico: o objetivo é combinar com a turma <em>o que cada ferramenta pode e não pode fazer</em> e preparar o ambiente.</p>
+</div>
+
+<article class="cell" id="c1">
+  <header><span class="num">1</span><h3>Título e visão geral <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Apresenta o minicurso, o sistema experimental (ferrita de bismuto dopada com neodímio, Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub>, com x entre 10% e 50%) e a tabela dos sete módulos.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>A frase central é: <em>os cálculos científicos são feitos por algoritmos verificáveis; o LLM entra depois, como copiloto de interpretação, e não substitui a Física.</em> Vale dizê-la logo de início, porque ela justifica a ordem de tudo o que vem a seguir (primeiro os números, depois o texto).</p>
+      <p>Pergunta de abertura: <em>“Quem já pediu a um chatbot para explicar um gráfico? Como vocês sabem se a explicação estava certa?”</em></p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c2">
+  <header><span class="num">2</span><h3>Como usar no Google Colab <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Instruções operacionais para os alunos.</p>
+    <ul>
+      <li>Abrir pelo botão <em>Open in Colab</em> do README (ou clonar o repositório).</li>
+      <li>CPU basta; GPU não acelera nada neste pipeline.</li>
+      <li><em>Ambiente de execução → Executar tudo</em> (<kbd>Ctrl</kbd>+<kbd>F9</kbd>) roda o notebook inteiro na ordem.</li>
+      <li>As figuras também são salvas na pasta <code>figuras/</code> da sessão (ícone de pasta à esquerda, para baixar os PNG).</li>
+      <li>O Módulo 6 (LLM) é opcional e usa o recurso <em>Secrets</em> do Colab.</li>
+    </ul>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>A sessão do Colab expira por inatividade e <b>nada é salvo no GitHub automaticamente</b>. Quem quiser levar o notebook anotado para casa precisa usar <em>Arquivo → Salvar uma cópia no Drive</em>. Avise isso no começo da aula.</p>
+      <p>Os CSV vêm da pasta <code>data/</code> ou, se ela não existir (caso de quem abre só o <code>.ipynb</code>), são baixados do GitHub. Não é preciso montar o Google Drive.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c3">
+  <header><span class="num">3</span><h3>Introdução à IA Científica <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> É a teoria do Módulo 1, em quatro blocos.</p>
+    <ol>
+      <li><b>1.1 O que é IA científica.</b> Métodos computacionais acoplados a um problema físico bem definido, com dados, unidades, hipóteses e limites de validade. Quatro ideias: pipeline reproduzível; grandezas com significado físico; ML só quando há uma pergunta preditiva clara; LLM para redigir e explicar o que os algoritmos já calcularam.</li>
+      <li><b>1.2 ML × Deep Learning × LLM.</b> ML aprende uma função f(X) → y a partir de exemplos (aqui: prever a dopagem de Nd a partir de características do DRX). Deep Learning precisa de muitos dados e está fora do escopo, porque só há 5 amostras reais. LLM gera texto condicionado a um <em>prompt</em>.</li>
+      <li><b>1.3 Pipeline híbrido.</b> Difratograma → leitura → pré-processamento → características → ML → avaliação → LLM → interpretação → relatório.</li>
+      <li><b>1.4 Regra de ouro.</b> O LLM não calcula 2θ, FWHM, R² nem tamanho de cristalito. Ele recebe um “dossiê numérico” e devolve texto.</li>
+    </ol>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Insista no risco clássico de laboratório: <em>inverter a ordem</em>, isto é, o texto convincente aparecer antes do número conferido. Uma frase eloquente não é evidência experimental.</p>
+      <p>Sobre Deep Learning: com n = 5, uma rede profunda só memoriza. “Mais avançado” não significa “melhor para este problema”.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c4">
+  <header><span class="num">4</span><h3>Configuração do ambiente <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Anuncia a célula seguinte: no Colab, <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code>, <code>scipy</code> e <code>scikit-learn</code> já vêm instalados; ela só importa o necessário e define um estilo de gráfico legível em projetor, com paleta distinguível por pessoas daltônicas.</p>
+  </div>
+</article>
+
+<article class="cell" id="c5">
+  <header><span class="num">5</span><h3>Bibliotecas e estilo dos gráficos <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Importa as bibliotecas, define a paleta de cores, ajusta o estilo global do <code>matplotlib</code> e cria a pasta <code>figuras/</code> e a função <code>show_and_save</code>.</p>
+    <div class="vars"><b>Cria:</b> <code>PALETTE</code>, <code>FIG_DIR</code>, <code>show_and_save</code> · <b>Precisa de:</b> nada (é a primeira célula de código).</div>
+    <p><b>Passo a passo</b></p>
+    <ol>
+      <li><b>Importações.</b> Cada biblioteca tem um papel fixo:
+        <ul>
+          <li><code>numpy</code> e <code>pandas</code>: vetores e tabelas.</li>
+          <li><code>matplotlib</code> (e <code>seaborn</code>): figuras.</li>
+          <li><code>scipy.signal</code>: <code>savgol_filter</code> (suavização), <code>find_peaks</code> (localizar picos), <code>peak_widths</code> (largura de cada pico).</li>
+          <li><code>scipy.sparse</code> e <code>spsolve</code>: resolver o sistema esparso da linha de base (célula 21).</li>
+          <li><code>scipy.stats</code>: <code>linregress</code> (regressão do Williamson–Hall) e <code>pearsonr</code> (correlação).</li>
+          <li><code>sklearn</code>: modelos, <code>StandardScaler</code>, <code>Pipeline</code>, Leave-One-Out e métricas.</li>
+        </ul>
+        O LLM <b>não</b> aparece aqui: ele só entra no Módulo 6.
+      </li>
+      <li><b><code>warnings.filterwarnings</code>.</b> Esconde avisos do tipo <code>UserWarning</code> para a tela da aula ficar limpa.</li>
+      <li><b><code>PALETTE</code>.</b> Um dicionário que associa cada dopagem a uma cor (paleta Okabe–Ito, desenhada para ser distinguível por daltônicos). Assim, 10% é sempre azul, 20% sempre verde etc. em todos os gráficos.</li>
+      <li><b><code>plt.rcParams.update(...)</code>.</b> Define o estilo global: resolução (120 dpi na tela, 150 ao salvar), fundo branco, grade tracejada suave, sem as bordas de cima e da direita, fonte maior e legenda sem moldura.</li>
+      <li><b><code>FIG_DIR</code>.</b> Cria (se não existir) a pasta <code>figuras/</code>.</li>
+      <li><b><code>show_and_save(fig, name)</code>.</b> Função usada em todas as figuras: grava o PNG em <code>figuras/</code>, mostra o gráfico na célula e fecha a figura para liberar memória.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Uma única linha: <code>Ambiente pronto. Figuras → …/figuras</code> (no Colab, algo como <code>/content/figuras</code>).</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Mostre a lista de importações como um “mapa de ferramentas”: cada biblioteca tem uma função no pipeline. Chame a atenção para a paleta: <em>escolher cores acessíveis também é parte do rigor científico</em>.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 2 ===================== -->
+<div class="module" id="m2">
+  <span class="tag">Módulo 2</span>
+  <h2>Conhecendo os dados experimentais</h2>
+  <p class="sub">Células 6 a 19. Ler os arquivos corretamente, descrevê-los com estatística e olhar os padrões de várias formas antes de qualquer cálculo físico.</p>
+</div>
+
+<article class="cell" id="c6">
+  <header><span class="num">6</span><h3>O que é um difratograma de pó; estrutura dos arquivos <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Explica a física do dado e o formato dos arquivos.</p>
+    <div class="eq">nλ = 2 d<sub>hkl</sub> sen θ<small>Lei de Bragg. Aqui λ = 1,5406 Å (radiação Cu Kα); o eixo do gráfico é 2θ.</small></div>
+    <p>Um feixe monocromático incide sobre um policristal; só os planos {hkl} que satisfazem Bragg produzem picos. O arquivo é, em essência, um par (2θ, I). Ao dopar com Nd (que substitui parcialmente o Bi), esperamos <em>em princípio</em> três efeitos: <b>deslocamento</b> dos picos (muda d<sub>hkl</sub>), <b>mudança de intensidade</b> (fator de estrutura, ocupação, textura) e <b>alargamento</b> (cristalito, microdeformação, instrumento).</p>
+    <p>Os cinco arquivos são <code>Nd_10.csv</code> … <code>Nd_50.csv</code>, com <b>duas colunas sem cabeçalho</b>: 2θ em graus e intensidade em unidades arbitrárias, de cerca de 10° a 80°.</p>
+    <div class="box warn"><b class="t">Atenção — a correção em relação à edição anterior</b>
+      <p>Como os CSV não têm cabeçalho, <code>pd.read_csv(arquivo)</code> sem <code>header=None</code> transforma o <b>primeiro ponto experimental</b> em nome de coluna e o descarta. A versão atual evita isso (célula 7). Esse é um bom exemplo de erro silencioso: nada quebra, mas falta um ponto.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Use um exemplo numérico: um pico em 2θ = 32° corresponde a d ≈ 2,80 Å (é o que a célula 28 vai calcular para o pico de 31,9°). Peça à turma que diga, <em>sem calcular</em>, para que lado o pico andaria se o parâmetro de rede diminuísse (d menor ⇒ sen θ maior ⇒ pico em 2θ maior).</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c7">
+  <header><span class="num">7</span><h3>Leitura dos cinco difratogramas <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define como ler um arquivo de DRX e carrega as cinco amostras num dicionário.</p>
+    <div class="vars"><b>Cria:</b> <code>REPO_RAW</code>, <code>LOCAL_DATA</code>, <code>DOPINGS</code>, <code>_read_xrd_csv</code>, <code>load_sample</code>, <b><code>patterns</code></b> · <b>Precisa de:</b> célula 5.</div>
+    <p><b>Passo a passo</b></p>
+    <ol>
+      <li><b>Constantes.</b> <code>REPO_RAW</code> é a URL da pasta <code>data/</code> no GitHub; <code>LOCAL_DATA</code> é a pasta local <code>data/</code>; <code>DOPINGS = [10, 20, 30, 40, 50]</code> é a lista de composições.</li>
+      <li><b><code>_read_xrd_csv</code>.</b> Lê o CSV com <code>header=None</code> e <code>names=["two_theta", "intensity"]</code> (nunca assume cabeçalho). Depois: converte tudo para número (<code>errors="coerce"</code> transforma texto em NaN e <code>dropna()</code> remove essas linhas); ordena por 2θ; e, se houver 2θ repetidos, tira a média das intensidades (para não criar picos “duplicados”).</li>
+      <li><b><code>load_sample(doping)</code>.</b> Procura <code>data/Nd_{doping}.csv</code>. Se existir, lê do disco; senão, o <code>pandas</code> baixa direto da URL do GitHub. É isso que permite abrir só o notebook no Colab, sem clonar nada.</li>
+      <li><b><code>patterns = {d: load_sample(d) for d in DOPINGS}</code>.</b> Carrega as cinco e guarda num dicionário: <code>patterns[10]</code> é a tabela do Nd 10%.</li>
+      <li><b>Inventário.</b> Para cada amostra, imprime número de pontos, faixa de 2θ, o passo angular (mediana das diferenças entre 2θ vizinhos) e a faixa de intensidade.</li>
+      <li><b>Última linha.</b> <code>patterns[10].head()</code> mostra as 5 primeiras linhas da tabela de 10% (o Colab exibe a última expressão da célula).</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Cinco linhas, todas com <b>6732 pontos</b>, 2θ de 10,00° a 80,00° e passo ≈ 0,0104° (isto é, 70° / 0,0104° ≈ 6,7 mil pontos). As intensidades variam: Nd 20% chega a 15 199 u.a., enquanto as outras ficam entre ~6 900 e ~8 800. Em seguida, a tabela com <code>two_theta</code> e <code>intensity</code> (primeiro ponto: 10,0000 e 1396).</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Pergunte: <em>“por que a mediana das diferenças e não a média?”</em> (a mediana é robusta a falhas pontuais na grade). E: <em>“por que a amostra de 20% tem intensidade tão maior?”</em> A resposta honesta é que não dá para saber só com esse dado: pode ser quantidade de material, empacotamento, textura ou condição de medida. Essa dúvida justifica a normalização do Módulo 3.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>Se um aluno estiver sem internet <em>e</em> sem a pasta <code>data/</code>, é aqui que aparece o erro de leitura da URL. O manual (seção 3) lista esse sintoma.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c8">
+  <header><span class="num">8</span><h3>2.4 Estatística descritiva dos arquivos <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Introduz a próxima célula: antes de olhar gráficos, medir o que cada CSV contém. O texto define o <b>coeficiente de variação</b>, CV = desvio padrão / média, e avisa que um CV alto é normal em DRX de pó: a maior parte do padrão é fundo e a energia está nos picos.</p>
+  </div>
+</article>
+
+<article class="cell" id="c9">
+  <header><span class="num">9</span><h3>Tabela de estatísticas <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Calcula, para cada amostra, estatísticas descritivas da intensidade bruta e monta uma tabela.</p>
+    <div class="vars"><b>Cria:</b> <code>stats_raw</code> · <b>Precisa de:</b> <code>patterns</code> (célula 7).</div>
+    <p><b>Passo a passo.</b> Para cada dopagem, converte a intensidade em vetor <code>y</code> e guarda um dicionário com: número de pontos <code>n</code>; passo angular; mínimo, mediana, média e máximo; desvio padrão (<code>ddof=1</code>, isto é, estimador amostral); <code>CV</code> e o percentil 95 (<code>I_p95</code>). A lista de dicionários vira um <code>DataFrame</code> indexado pela dopagem e é exibida com 3 casas.</p>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Uma tabela 5 × 10. Alguns valores para conferir: mediana entre 1 132 e 1 614; <b>CV de 0,40 / 0,43 / 0,28 / 0,29 / 0,29</b> (10% a 50%); percentil 95 entre ~1 650 e ~2 280, enquanto os máximos vão de ~6 900 a ~15 200.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>O ponto-chave é a distância entre o percentil 95 e o máximo: <b>95% dos pontos têm intensidade abaixo de ~2 000, e os picos chegam a milhares</b>. Ou seja, quase todo o arquivo é fundo e ruído; a informação está em poucos pontos. Isso explica por que não dá para “dar o espectro inteiro” ao modelo de ML e por que as características serão extraídas dos picos.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c10">
+  <header><span class="num">10</span><h3>Gráficos de barras das estatísticas <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Três painéis lado a lado com <b>intensidade máxima</b>, <b>intensidade média</b> e <b>CV</b> de cada amostra, usando a cor de cada dopagem. Salva em <code>02_stats_barras.png</code>.</p>
+    <div class="vars"><b>Precisa de:</b> <code>stats_raw</code> (célula 9), <code>PALETTE</code>, <code>show_and_save</code>.</div>
+    <div class="box screen"><b class="t">Na tela</b><p>Três gráficos de barras. O de 20% se destaca no máximo e na média.</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Aproveite para ensinar a <em>ler a figura antes de interpretar</em>: eixos, unidades, título. Aqui “u.a.” (unidades arbitrárias) já avisa que o valor absoluto de intensidade depende do equipamento.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c11">
+  <header><span class="num">11</span><h3>Histogramas das intensidades <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Cinco histogramas (40 faixas cada), um por amostra, com eixo y compartilhado e uma linha tracejada na mediana. Salva em <code>02_hist_intensidade.png</code>.</p>
+    <div class="vars"><b>Precisa de:</b> <code>patterns</code>, <code>PALETTE</code>.</div>
+    <div class="box screen"><b class="t">Na tela</b><p>Cada histograma tem uma “montanha” grande à esquerda (o fundo) e uma cauda longa à direita (os picos).</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Esta figura mostra o mesmo fato da célula 9 de forma visual: <b>a massa dos dados está no fundo; os picos são a cauda</b>. A mediana fica dentro da “montanha”, longe da cauda.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c12">
+  <header><span class="num">12</span><h3>Visualização <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Apresenta as próximas figuras: um padrão isolado (a “impressão digital” cristalina), o <b>waterfall</b> (padrões empilhados com deslocamento vertical, mais legível em aula que um 3D) e um <b>mapa de intensidade</b> 2θ × dopagem para ver se os picos caminham com x.</p>
+  </div>
+</article>
+
+<article class="cell" id="c13">
+  <header><span class="num">13</span><h3>Um difratograma bruto <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define <code>plot_single_pattern</code> e a usa para desenhar o padrão bruto da amostra de 10%.</p>
+    <div class="vars"><b>Cria:</b> <code>plot_single_pattern</code> · <b>Precisa de:</b> <code>patterns</code>, <code>PALETTE</code>.</div>
+    <ol>
+      <li>A função recebe a tabela, a dopagem e (opcionalmente) um eixo <code>ax</code>; se não vier eixo, usa o atual. Isso a torna reutilizável em painéis.</li>
+      <li>Desenha intensidade × 2θ na cor da dopagem, rotula os eixos (2θ em graus, intensidade em u.a.) e coloca no título a fórmula Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub> com o x correspondente (as fórmulas usam a sintaxe de matemática do <code>matplotlib</code>, entre cifrões).</li>
+      <li><code>AutoMinorLocator</code> adiciona marcas menores no eixo x, úteis para ler ângulos.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b><p>Um difratograma típico: fundo quase plano e picos estreitos, o mais forte perto de 32°.</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Peça aos alunos que identifiquem: onde está o pico mais forte? Há picos largos e estreitos? O que seria um “fundo”? Esse é o dado com o qual o resto do curso vai trabalhar.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c14">
+  <header><span class="num">14</span><h3>Waterfall das cinco dopagens <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Empilha os cinco padrões no mesmo gráfico, cada um deslocado verticalmente, para comparar formas sem que se sobreponham.</p>
+    <div class="vars"><b>Cria:</b> <code>plot_waterfall</code> · <b>Precisa de:</b> <code>patterns</code>.</div>
+    <ol>
+      <li>Calcula o maior valor de intensidade entre todas as amostras e usa <b>55% dele</b> como degrau entre curvas (separa sem estourar a figura).</li>
+      <li>Para cada amostra, na ordem de dopagem, desenha <code>intensidade + i × degrau</code>, e escreve o rótulo (“10%”, …) na ponta direita da curva.</li>
+      <li>Retorna a figura. A última linha chama <code>show_and_save(plt.gcf(), …)</code> para exibir e gravar <code>02_waterfall.png</code>.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b><p>Cinco curvas empilhadas, 10% embaixo e 50% em cima, com legenda em cima.</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Siga o roteiro da célula 19: picos no mesmo 2θ ⇒ mesma família de planos; picos que caminham ⇒ variação de d<sub>hkl</sub>; picos que surgem ou somem ⇒ hipótese de outra fase ou impureza (a verificar, não uma conclusão). Pergunte onde o pico principal parece “andar”.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c15">
+  <header><span class="num">15</span><h3>Mapa de intensidade 2θ × dopagem <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Constrói uma imagem em que cada linha é uma amostra, cada coluna é um valor de 2θ e a cor é a intensidade normalizada.</p>
+    <div class="vars"><b>Cria:</b> <code>theta_grid</code>, <code>stack</code> · <b>Precisa de:</b> <code>patterns</code>, <code>DOPINGS</code>.</div>
+    <ol>
+      <li><code>theta_grid</code>: 1 400 pontos igualmente espaçados entre 10° e 80°.</li>
+      <li><code>stack</code>: para cada amostra, divide a intensidade pelo seu próprio máximo (normaliza) e interpola na grade comum com <code>np.interp</code>. Resultado: uma matriz 5 × 1 400.</li>
+      <li><code>pcolormesh</code> pinta a matriz com o mapa de cores <i>cividis</i> (perceptualmente uniforme e amigável a daltônicos) e a barra de cores indica I/I<sub>máx</sub>.</li>
+    </ol>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>O comentário do próprio código avisa: a interpolação <b>não é um refinamento</b>, é só visualização. Ela apenas coloca os cinco padrões numa grade comum para poder desenhá-los como imagem.</p>
+    </div>
+    <div class="box screen"><b class="t">Na tela</b><p>Uma faixa horizontal escura com linhas claras verticais: cada linha clara é um pico. Se ela se desloca de uma linha (amostra) para outra, o pico caminha com a dopagem.</p></div>
+  </div>
+</article>
+
+<article class="cell" id="c16">
+  <header><span class="num">16</span><h3>Visão 3D complementar <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Desenha os mesmos dados do waterfall em três dimensões: 2θ no eixo x, a dopagem no eixo y e a intensidade no eixo z.</p>
+    <ol>
+      <li><code>slice(None, None, 4)</code> usa só 1 a cada 4 pontos, para o 3D não virar uma “fita preta” e renderizar mais rápido.</li>
+      <li>Cada amostra é uma linha a y constante (<code>np.full_like(x3, d)</code>) e altura z = intensidade.</li>
+      <li><code>view_init(elev=22, azim=-60)</code> fixa o ângulo de visão.</li>
+    </ol>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É um complemento visual: <b>não traz informação nova</b> em relação ao waterfall. Use como exemplo de que “gráfico bonito” não é “gráfico mais informativo” e de que o 2D costuma ser mais legível.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c17">
+  <header><span class="num">17</span><h3>Correlação e RMSE entre os padrões <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Mede quão parecidos são os cinco difratogramas entre si, de duas formas, e mostra as duas matrizes lado a lado.</p>
+    <div class="vars"><b>Cria:</b> <code>theta_c</code>, <code>mat</code>, <code>corr</code>, <code>rmse</code> · <b>Precisa de:</b> <code>patterns</code>.</div>
+    <ol>
+      <li><code>theta_c</code>: grade comum de 2 000 pontos; <code>mat</code>: matriz 5 × 2 000 com cada padrão dividido pelo seu máximo.</li>
+      <li><b>Correlação de Pearson</b> entre as linhas de <code>mat</code> (1 = padrões idênticos em forma).</li>
+      <li><b>RMSE</b> par a par: raiz da média dos quadrados das diferenças (0 = idênticos). São dois laços <code>for</code> aninhados sobre os 5 × 5 pares.</li>
+      <li>Dois mapas de calor com os valores anotados.</li>
+      <li>No fim, imprime a correlação média fora da diagonal.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Dois mapas de calor 5 × 5 e a linha <code>Correlação média (off-diagonal): 0.46…</code>. Valores reais: 30% × 40% = <b>0,98</b>; 40% × 50% = 0,90; 30% × 50% = 0,87; já o padrão de 10% tem correlação de apenas <b>0,05 a 0,24</b> com os demais. O RMSE segue a mesma história: 0,01 entre 30% e 40%, e ~0,07–0,09 entre 10% e os outros.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É um primeiro resultado interessante: <b>as amostras de 30%, 40% e 50% são muito parecidas entre si, e a de 10% é a “diferente”</b>. Pergunte à turma o que isso pode significar (outra fase, outra cristalinidade, picos em outras posições?). Isso antecipa, na célula 27, o fato de o pico principal de 10% estar em 31,9° e os demais em ~32,4–32,7°.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>A escala de cor da correlação está fixada em <code>vmin=0.7, vmax=1</code>. Como boa parte dos valores reais é menor que 0,7 (por exemplo 0,05 e 0,24), essas células aparecem todas na mesma cor “mais baixa”. Os <b>números anotados</b> dentro de cada quadrado são os que valem. Se um aluno perguntar, esta é a explicação. Se preferir, mude <code>vmin</code> para 0.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c18">
+  <header><span class="num">18</span><h3>Interpolações entre vizinhos (só visual) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Sobrepõe aos cinco padrões reais linhas pontilhadas cinzas que são <b>misturas lineares</b> entre amostras vizinhas (com pesos 0,35/0,65 e 0,65/0,35).</p>
+    <div class="vars"><b>Precisa de:</b> <code>theta_c</code>, <code>mat</code> (célula 17).</div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>Estas linhas <b>não são amostras novas</b> e não têm significado físico direto. Uma mistura linear de dois padrões em que um pico mudou de posição mostra <em>dois picos</em> (um de cada), e não um pico em posição intermediária, que é o que aconteceria num material com composição intermediária. Use a figura só para ilustrar “tendência contínua” e diga isso à turma.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c19">
+  <header><span class="num">19</span><h3>Leitura física rápida (ainda qualitativa) <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Dá três regras para ler o waterfall e o mapa:</p>
+    <ul>
+      <li>picos <b>no mesmo 2θ</b> sugerem a mesma família de planos (mesma fase dominante);</li>
+      <li>picos que <b>caminham</b> com x sugerem variação de d<sub>hkl</sub> (lei de Bragg);</li>
+      <li>picos que <b>nascem ou somem</b> sugerem mudança de fase ou impureza: uma hipótese a checar depois, não uma conclusão.</li>
+    </ul>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Reforce a palavra “qualitativa”: ruído e linha de base ainda estão no sinal. As conclusões quantitativas vêm depois do pré-processamento.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 3 ===================== -->
+<div class="module" id="m3">
+  <span class="tag">Módulo 3</span>
+  <h2>Pré-processamento dos difratogramas</h2>
+  <p class="sub">Células 20 a 25. Reduzir o ruído, remover o fundo e normalizar, para que as medidas feitas depois (posição, largura) reflitam a amostra e não o ruído.</p>
+</div>
+
+<article class="cell" id="c20">
+  <header><span class="num">20</span><h3>As três etapas do pré-processamento <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <ol>
+      <li><b>Suavização (Savitzky–Golay).</b> Ajusta um polinômio local e reduz o ruído de alta frequência deslocando menos os picos do que uma média móvel simples.</li>
+      <li><b>Linha de base (ALS, <em>asymmetric least squares</em>; Eilers &amp; Boelens).</b> Estima o fundo penalizando a curvatura e tratando os resíduos de forma assimétrica, para que os <b>picos não sejam engolidos</b> pela linha de fundo.</li>
+      <li><b>Normalização.</b> Divide pela intensidade máxima já corrigida, I ← I / I<sub>máx</sub>, para comparar <b>formas</b>.</li>
+    </ol>
+    <div class="box warn"><b class="t">Atenção — limites que o texto já declara</b>
+      <p>A normalização <b>apaga</b> a informação de contagens absolutas. É adequada para posições e formas, mas não para comparar intensidades entre medidas não calibradas. Além disso, <b>não houve calibração de 2θ</b> com padrão interno: pequenos deslocamentos podem misturar física da amostra com erro de zero do goniômetro. Vale lembrar isso na discussão.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c21">
+  <header><span class="num">21</span><h3>Funções de suavização, linha de base e normalização <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define três funções e aplica o pré-processamento a todas as amostras. É a célula mais “densa” do Módulo 3.</p>
+    <div class="vars"><b>Cria:</b> <code>baseline_als</code>, <code>_savgol_window</code>, <code>preprocess</code>, <b><code>processed</code></b> · <b>Precisa de:</b> <code>patterns</code> (célula 7).</div>
+
+    <p><b>1) <code>baseline_als(y, lam=1e5, p=0.001, niter=12)</code> — a linha de base.</b></p>
+    <div class="eq">minimizar Σ w<sub>i</sub> (y<sub>i</sub> − z<sub>i</sub>)² + λ Σ (Δ²z<sub>i</sub>)²<small>z é a linha de base; Δ²z é a segunda diferença (curvatura); w são pesos que mudam a cada iteração.</small></div>
+    <ul>
+      <li><code>lam</code> (λ = 10⁵): quanto maior, mais “rígida” é a base (menos ela sobe nos picos).</li>
+      <li><code>p</code> (0,001): a <b>assimetria</b>. Pontos <em>acima</em> da base (os picos) recebem peso minúsculo (0,001); pontos <em>abaixo</em> recebem peso quase 1. Assim a base segue o fundo, e não o topo dos picos.</li>
+      <li>Laço de 12 iterações: resolve o sistema linear esparso (<code>spsolve</code>) com os pesos atuais, depois atualiza os pesos conforme cada ponto esteja acima ou abaixo da base.</li>
+      <li>O operador <code>d2</code> (matriz com 1, −2, 1) é a segunda diferença: ele mede a curvatura. Penalizá-la faz a base ser “quase reta ou lenta”.</li>
+    </ul>
+    <details><summary>Ver o laço principal</summary>
+<pre><code>w = np.ones(n)
+z = y.copy()
+for _ in range(niter):
+    W = sparse.spdiags(w, 0, n, n)
+    z = spsolve((W + lam * (d2.T @ d2)).tocsc(), w * y)
+    # pontos acima da base (picos) pesam pouco; pontos abaixo puxam a base
+    w = p * (y &gt; z) + (1.0 - p) * (y &lt; z)</code></pre>
+    </details>
+
+    <p><b>2) <code>_savgol_window</code> — uma proteção.</b> O filtro Savitzky–Golay exige janela ímpar, menor que o tamanho do vetor e maior que a ordem do polinômio. Esta função ajusta a janela pedida para respeitar essas regras (ou devolve <code>None</code> se não der).</p>
+
+    <p><b>3) <code>preprocess(df, savgol_window=21, savgol_poly=3)</code> — a sequência completa.</b></p>
+    <ol>
+      <li>Suaviza a intensidade (<b>janela de 21 pontos, polinômio de grau 3</b>).</li>
+      <li>Estima a linha de base <em>sobre o sinal suavizado</em>.</li>
+      <li>Calcula <code>corrected = suavizado − base</code> e corta valores negativos com <code>np.clip(…, 0, None)</code> (intensidade negativa após a base é um artefato).</li>
+      <li>Normaliza: <code>normalized = corrected / máximo</code>.</li>
+      <li>Devolve a tabela original com 4 colunas novas: <code>smooth</code>, <code>baseline</code>, <code>corrected</code>, <code>normalized</code>.</li>
+    </ol>
+    <p>Por fim, <code>processed = {d: preprocess(df) …}</code> aplica a função às cinco amostras.</p>
+
+    <div class="box screen"><b class="t">Na tela</b><p>Só uma linha: <code>Pré-processamento concluído para [10, 20, 30, 40, 50]</code>. A célula é rápida (poucos segundos) mesmo resolvendo 12 sistemas lineares esparsos de ~6,7 mil incógnitas por amostra.</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Use a analogia da linha de base: <em>“imagine esticar uma corda por baixo do gráfico; a corda não pode furar o fundo, mas também não pode ser empurrada para cima pelos picos”</em>. O parâmetro <code>p</code> pequeno é o que impede a corda de subir nos picos.</p>
+      <p>Ressalte que <code>lam</code>, <code>p</code> e a janela do filtro são <b>escolhas</b>: o resultado depende delas. Boa atividade: mudar <code>lam</code> para 1e3 e 1e7 e ver a figura da célula 22.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>A janela de 21 pontos equivale a 21 × 0,0104° ≈ <b>0,22°</b>, que é da ordem do FWHM dos picos mais estreitos (≈0,19°). O polinômio de grau 3 preserva bem a forma, mas esse é um ponto em que o parâmetro pode influenciar as larguras medidas depois. Vale testar <code>savgol_window=11</code> e comparar o FWHM da célula 27.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c22">
+  <header><span class="num">22</span><h3>Ruído, linha de base e resultado final (amostra 10%) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Mostra o efeito do pré-processamento numa amostra (<code>d_show = 10</code>; troque o número para ver outras).</p>
+    <div class="vars"><b>Precisa de:</b> <code>processed</code> (célula 21).</div>
+    <ul>
+      <li><b>Painel da esquerda:</b> sinal bruto (cinza), suavizado (cor da amostra) e linha de base (tracejada laranja).</li>
+      <li><b>Painel da direita:</b> o resultado, depois de subtrair a base e normalizar.</li>
+    </ul>
+    <div class="box screen"><b class="t">Na tela</b><p>À esquerda, a linha de base passa por baixo dos picos, acompanhando o fundo. À direita, o fundo está em zero e o pico mais forte vale 1.</p></div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Pergunte: <em>“a linha de base subiu dentro de algum pico?”</em> Se sim, <code>lam</code> está pequeno demais. E: <em>“o que ficou diferente entre o cinza e a curva colorida?”</em> (o ruído foi suavizado sem apagar os picos).</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c23">
+  <header><span class="num">23</span><h3>Comparação das cinco amostras (normalizadas) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Desenha as cinco curvas normalizadas no mesmo gráfico, cada uma na sua cor.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Agora que todas valem no máximo 1, as <b>formas</b> podem ser comparadas diretamente. É a figura certa para discutir deslocamento do pico principal e mudança no número de picos secundários.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c24">
+  <header><span class="num">24</span><h3>Painel com uma amostra por quadro <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Uma grade 2 × 3 com cada padrão normalizado em seu próprio painel (o sexto quadro fica vazio, com <code>axis("off")</code>). Salva <code>03_painel_cinco.png</code>.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Útil quando a sobreposição da célula anterior confunde: aqui dá para ver o detalhe de cada difratograma separadamente.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c25">
+  <header><span class="num">25</span><h3>Zoom no pico principal e resíduo do suavizador <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Dois gráficos.</p>
+    <ul>
+      <li><b>Esquerda:</b> zoom entre 30° e 34° (região do pico principal) para as cinco amostras. A máscara <code>(two_theta ≥ 30) &amp; (two_theta ≤ 34)</code> seleciona só essa faixa.</li>
+      <li><b>Direita:</b> o <b>resíduo</b> do suavizador para 10%, isto é, <code>bruto − suavizado</code>.</li>
+    </ul>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>O resíduo é um teste de sanidade do filtro: ele deve parecer <b>ruído aleatório em torno de zero</b>. Se aparecessem “mini-picos” no resíduo, o filtro teria removido sinal real. No zoom, comparem posição e largura do pico das cinco amostras: o pico de 10% fica mais à esquerda e é mais largo, o que será quantificado no Módulo 4.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 4 ===================== -->
+<div class="module" id="m4">
+  <span class="tag">Módulo 4</span>
+  <h2>Extração de características</h2>
+  <p class="sub">Células 26 a 36. Transformar cada difratograma (milhares de pontos) num vetor curto de grandezas com sentido físico: posição e largura de picos, tamanho de cristalito e microdeformação.</p>
+</div>
+
+<article class="cell" id="c26">
+  <header><span class="num">26</span><h3>Por que extrair características; Scherrer; Williamson–Hall <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Justifica a compactação dos dados e apresenta as duas fórmulas do módulo. O modelo de ML <b>não</b> vê o vetor inteiro (isso seria caminho de Deep Learning, com n insuficiente): cada amostra vira um vetor curto.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Significado físico aproximado</th></tr></thead>
+        <tbody>
+          <tr><td>Posição do pico principal</td><td>família de planos mais intensa (Bragg)</td></tr>
+          <tr><td>Intensidade máxima bruta</td><td>escala do detector, quantidade difratando, textura</td></tr>
+          <tr><td>FWHM do pico principal</td><td>tamanho de cristalito + microdeformação + efeito instrumental</td></tr>
+          <tr><td>Área integrada (após base)</td><td>“massa” do envelope corrigido</td></tr>
+          <tr><td>Centroide</td><td>centro de gravidade do padrão</td></tr>
+          <tr><td>Número de picos</td><td>complexidade, possíveis fases extras</td></tr>
+          <tr><td>Média, desvio, assimetria</td><td>forma global do envelope</td></tr>
+          <tr><td>D de Scherrer</td><td>tamanho <em>aparente</em> de cristalito</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="eq">D = K λ / (β cos θ)<small>Scherrer. K ≈ 0,9; λ = 1,5406 Å; β = FWHM em <b>radianos</b>; θ = metade do 2θ do pico.</small></div>
+    <div class="eq">β cos θ = K λ / D + 4 ε sen θ<small>Williamson–Hall (deformação uniforme). Intercepto ⇒ D; declive ⇒ ε (microdeformação, adimensional).</small></div>
+    <div class="box warn"><b class="t">Atenção — limites declarados no próprio texto</b>
+      <ul>
+        <li>Scherrer assume que o alargamento vem <b>só do tamanho</b>; não separa microdeformação nem instrumento.</li>
+        <li>Sem padrão (Si, LaB<sub>6</sub>) <b>não se subtrai o alargamento instrumental</b>: D e ε são <em>aparentes</em>.</li>
+        <li>A edição anterior calculava β a partir da derivada da intensidade e obtinha D ≈ 0,1 nm (absurdo físico). Agora β é o FWHM de cada pico.</li>
+        <li>Cada pico vira um registro numa tabela longa (<code>peak_catalog</code>): é o “maior número de pontos” que 5 CSV permitem sem inventar amostras.</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c27">
+  <header><span class="num">27</span><h3>Detecção de picos, Scherrer, Williamson–Hall e tabela de características <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> É a célula central do curso. Define as funções de medida e produz a tabela <code>features</code>, com uma linha por amostra.</p>
+    <div class="vars"><b>Cria:</b> <code>K_SCHERRER</code>, <code>LAMBDA_ANGSTROM</code>, <code>detect_peaks</code>, <code>scherrer_nm</code>, <code>d_hkl_angstrom</code>, <code>williamson_hall</code>, <code>extract_features</code>, <b><code>features</code></b>, <b><code>feature_view</code></b> · <b>Precisa de:</b> <code>processed</code> (célula 21).</div>
+
+    <p><b>1) <code>detect_peaks(two_theta, y, …)</code>.</b> Usa <code>find_peaks</code> do scipy no padrão <em>normalizado</em> com três critérios:</p>
+    <ul>
+      <li><code>height</code>: o pico precisa ter pelo menos <b>12%</b> do máximo;</li>
+      <li><code>prominence</code>: precisa se destacar pelo menos <b>5%</b> do máximo em relação à vizinhança;</li>
+      <li><code>distance</code>: dois picos precisam estar a pelo menos <b>0,8°</b> um do outro (≈ 76 pontos).</li>
+    </ul>
+    <p>A largura de cada pico vem de <code>peak_widths(…, rel_height=0.5)</code> (largura a meia altura) e é convertida de pontos para graus multiplicando pelo passo <code>dx</code>. A função devolve as posições (índices) dos picos e o FWHM em graus.</p>
+
+    <p><b>2) <code>scherrer_nm(two_theta_deg, fwhm_deg)</code>.</b> Aplica D = Kλ / (β cos θ). Detalhes que importam: recebe o <b>2θ</b> do pico (por isso divide por 2 para obter θ); converte o FWHM de graus para radianos; calcula D em Å e divide por 10 para dar nm.</p>
+    <div class="box ok"><b class="t">Exemplo resolvido — vale mostrar no quadro</b>
+      <p>Pico principal de 10% Nd: 2θ = 31,9024° e FWHM = 0,4254°. Então θ = 15,9512°, cos θ = 0,9615 e β = 0,4254° × π/180 = 0,007425 rad.</p>
+      <p>D = 0,9 × 1,5406 Å / (0,007425 × 0,9615) = 194,2 Å = <b>19,42 nm</b>, exatamente o valor da tabela.</p>
+      <p>E, pela lei de Bragg, d = λ / (2 sen θ) = 1,5406 / (2 × sen 15,9512°) = <b>2,803 Å</b>.</p>
+    </div>
+
+    <p><b>3) <code>d_hkl_angstrom</code>.</b> Lei de Bragg com n = 1.</p>
+
+    <p><b>4) <code>williamson_hall(two_theta_deg, fwhm_deg, min_peaks=3)</code>.</b></p>
+    <ol>
+      <li>Filtra picos válidos: FWHM entre 0,06° e 1,2° e 2θ entre 18° e 75°. Com menos de 3 picos, devolve <code>None</code>.</li>
+      <li>Monta x = 4 sen θ e y = β cos θ (β em radianos).</li>
+      <li>Faz regressão linear (<code>linregress</code>): <b>intercepto</b> → D = Kλ / intercepto (só se o intercepto for positivo; senão D fica indefinido, <code>NaN</code>); <b>declive</b> → ε (microdeformação).</li>
+      <li>Devolve também o coeficiente de correlação <code>r</code>, o p-valor e o número de picos usados <code>n</code>.</li>
+    </ol>
+
+    <p><b>5) <code>extract_features(doping, df)</code>.</b> Para uma amostra, calcula e empacota:</p>
+    <ul>
+      <li>número de picos (<code>n_peaks</code>), posição do máximo (<code>two_theta_max</code>), intensidade máxima bruta (<code>i_max_raw</code>);</li>
+      <li>FWHM do pico mais intenso e D de Scherrer nesse pico (<code>fwhm_main_deg</code>, <code>scherrer_D_nm</code>), além da média de Scherrer sobre todos os picos (<code>scherrer_D_mean_nm</code>);</li>
+      <li>área (integral trapezoidal da intensidade corrigida), centroide (centro de gravidade em 2θ), média, desvio e assimetria da curva normalizada;</li>
+      <li>resultado do Williamson–Hall: D, ε, r e número de picos (<code>wh_D_nm</code>, <code>wh_strain</code>, <code>wh_r</code>, <code>wh_n</code>);</li>
+      <li>duas listas com as posições e larguras de todos os picos (usadas para o catálogo).</li>
+    </ul>
+    <p>Para a área, o código escolhe <code>np.trapezoid</code> ou, se for uma versão antiga do numpy, <code>np.trapz</code>. Isso evita um erro de compatibilidade.</p>
+
+    <p><b>6) Execução.</b> <code>features</code> junta as cinco amostras; <code>feature_view</code> é a mesma tabela sem as duas colunas de listas, arredondada para 3 casas.</p>
+
+    <div class="box screen"><b class="t">Na tela — a tabela de características (valores reais)</b>
+      <div class="tablewrap" style="margin-top:8px">
+        <table>
+          <thead><tr><th>Nd (%)</th><th>Nº picos</th><th>2θ do máximo (°)</th><th>FWHM principal (°)</th><th>D Scherrer (nm)</th><th>D Scherrer médio (nm)</th><th>D WH (nm)</th><th>ε WH</th><th>r WH</th><th>picos no WH</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>7</td><td>31,902</td><td>0,425</td><td>19,42</td><td>33,61</td><td>33,31</td><td>≈0,0002</td><td>0,067</td><td>7</td></tr>
+            <tr><td>20</td><td>5</td><td>32,693</td><td>0,217</td><td>38,10</td><td>34,14</td><td>118,66</td><td>0,0023</td><td>0,895</td><td>5</td></tr>
+            <tr><td>30</td><td>9</td><td>32,391</td><td>0,199</td><td>41,52</td><td>31,03</td><td>264,22</td><td>0,0027</td><td>0,700</td><td>8</td></tr>
+            <tr><td>40</td><td>9</td><td>32,402</td><td>0,202</td><td>40,92</td><td>30,14</td><td>129,05</td><td>0,0024</td><td>0,613</td><td>8</td></tr>
+            <tr><td>50</td><td>6</td><td>32,454</td><td>0,192</td><td>43,06</td><td>34,28</td><td>86,07</td><td>0,0018</td><td>0,849</td><td>6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:8px">A tabela completa na tela tem mais colunas (área, centroide, média, desvio, assimetria etc.).</p>
+    </div>
+
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Siga a tabela como uma história. O FWHM do pico principal <b>diminui</b> com Nd (0,43° → 0,19°) e o D de Scherrer nesse pico <b>aumenta</b> (19 → 43 nm). Já o D de Scherrer <em>médio sobre todos os picos</em> fica quase constante (30 a 34 nm). Pergunte: <em>qual dos dois é mais confiável?</em> Não há resposta única, e isso é a lição: <b>a característica escolhida muda a conclusão</b>.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção — onde um aluno atento vai perguntar</b>
+      <ul>
+        <li><b>O Williamson–Hall de 10% não tem sentido:</b> r = 0,067, ou seja, os pontos não seguem uma reta. O D e o ε dessa amostra (33 nm e ≈0,0002) vêm de um ajuste sem correlação.</li>
+        <li><b>D (WH) = 264 nm em 30%</b> contra 41,5 nm em Scherrer. Como D = Kλ / intercepto, quando o intercepto é pequeno qualquer ruído faz D “explodir”. Os tamanhos de WH variam de 33 a 264 nm sem tendência clara; com 5 a 8 picos e r entre 0,6 e 0,9, isso é esperado.</li>
+        <li><b>O pico principal de 10% está em 31,9° e os demais em ~32,4–32,7°.</b> A diferença de largura (0,43° contra ~0,2°) pode vir de mais de uma causa, por exemplo a sobreposição de reflexões vizinhas perto de 32°. Só um refinamento (Rietveld) separa isso. O notebook <b>não</b> indexa os picos (não atribui hkl).</li>
+        <li>O número de picos detectados (7, 5, 9, 9, 6) depende dos limiares 12% e 5%. Mudar os limiares muda a tabela.</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c28">
+  <header><span class="num">28</span><h3>Catálogo de picos (uma linha por pico) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Gera uma tabela “longa”, em que cada linha é um pico detectado numa amostra, com posição, intensidade, FWHM, distância interplanar d e D de Scherrer. Também guarda os ajustes de Williamson–Hall de cada amostra em <code>wh_fits</code> (usados nas figuras seguintes).</p>
+    <div class="vars"><b>Cria:</b> <b><code>peak_catalog</code></b>, <b><code>wh_fits</code></b> · <b>Precisa de:</b> <code>processed</code>, <code>detect_peaks</code>, <code>williamson_hall</code>, <code>scherrer_nm</code>, <code>d_hkl_angstrom</code> (célula 27).</div>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p><code>36 registros de pico | 5 amostras</code> (7 + 5 + 9 + 9 + 6 picos), seguido das 12 primeiras linhas. Para 10% Nd, os picos estão em 22,50°, <b>31,90°</b>, 39,58°, 45,90°, 51,51°, 57,25° e 67,18°; o pico em 31,90° tem I<sub>norm</sub> = 1 e d = 2,803 Å. As distâncias d diminuem à medida que 2θ aumenta (3,95 Å em 22,5° e 1,39 Å em 67,2°).</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É a mudança de “uma linha por amostra” para “uma linha por pico”, o que dá 36 registros em vez de 5. Mas cuidado ao dizer isso: <b>não são 36 amostras independentes</b>, são 36 medidas dentro de 5 amostras. Serve para gráficos e estatísticas descritivas, não para aumentar n no ML.</p>
+      <p>O padrão de picos (22,5°, 31,9°, 39,6°, 45,9°, 51,5°, 57,2°…) lembra a sequência de reflexões da ferrita de bismuto, mas a indexação precisa ser conferida com a ficha cristalográfica; este notebook não faz isso.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c29">
+  <header><span class="num">29</span><h3>Picos e larguras anotados (amostra 10%) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Desenha o padrão normalizado de 10% com os picos marcados (pontos laranja), um segmento horizontal à meia altura de cada um (mostrando o FWHM) e a anotação “posição° / FWHM”. O título traz o máximo e o D de Scherrer do pico principal.</p>
+    <div class="vars"><b>Detalhe técnico.</b> <code>peak_widths</code> devolve também as posições esquerda e direita (em índices) onde a curva cruza a meia altura; o código as converte em graus (<code>x[0] + índice × dx</code>) para desenhar o segmento.</div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É a figura que <b>mostra o que “FWHM” significa</b>: a largura do pico medida na metade da altura. Peça a um aluno que explique, olhando o segmento laranja, por que um pico estreito dá um D grande (cristalito grande, alargamento pequeno).</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>A função <code>peak_widths</code> mede a “meia altura” em relação à <em>proeminência</em> do pico. Para picos sobre fundo zero (como aqui, depois da linha de base) isso coincide com a meia altura; em picos sobre ombros ou sobrepostos pode diferir.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c30">
+  <header><span class="num">30</span><h3>Características × dopagem (seis painéis) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Seis gráficos de linha com a evolução, em função de Nd (%), de: número de picos, FWHM principal, D de Scherrer (pico máximo), D de Scherrer (média dos picos), D de Williamson–Hall e microdeformação ε. Salva <code>04_features_vs_nd.png</code>.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É a hora de perguntar: <em>“há tendência clara em alguma característica?”</em> Respostas honestas: o FWHM principal e o D de Scherrer (pico máximo) mostram uma tendência; o D (WH) oscila muito; o número de picos oscila sem padrão. Com 5 pontos, <b>“tendência” precisa de cautela</b>.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c31">
+  <header><span class="num">31</span><h3>Boxplot e violino das larguras e intensidades dos picos <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Usa o catálogo de 36 picos para mostrar, por dopagem, a distribuição do FWHM (boxplot) e da intensidade normalizada dos picos (violino, com <code>cut=0</code> para não estender além dos dados).</p>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>Pode aparecer um aviso vermelho do <code>seaborn</code> (<code>FutureWarning</code> sobre <code>palette</code> sem <code>hue</code>). É só um aviso de futura mudança de versão; <b>o gráfico sai normalmente</b>. Avise os alunos para não se assustarem.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Com poucos picos por amostra (5 a 9), boxplot e violino são mais ilustrativos que inferenciais. Use para ensinar a ler um boxplot (mediana, quartis, valores extremos) e para lembrar que “distribuição” com 5–9 pontos é frágil.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c32">
+  <header><span class="num">32</span><h3>Scherrer pico a pico <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Gráfico de dispersão: para cada pico do catálogo, D de Scherrer (nm) em função do 2θ, com uma cor por amostra.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>O título dá a chave de leitura. Se o alargamento fosse <b>só de tamanho</b>, D seria constante com 2θ (β ∝ 1/cos θ). Se a microdeformação (ou o instrumento) pesasse, β cresceria com tan θ e o D “aparente” <b>cairia</b> com 2θ.</p>
+      <p>É o que os dados mostram: os valores vão de ~16 a ~48 nm e, em <b>4 das 5 amostras (20%, 30%, 40% e 50%), D cai com 2θ</b> (correlação entre −0,79 e −0,93). A exceção é 10% (−0,29), a mesma amostra em que o Williamson–Hall não se ajustou (r = 0,07). Conclusão para a turma: o alargamento <b>não</b> é só de tamanho, então o D de Scherrer de um único pico subestima ou superestima o tamanho real conforme o pico escolhido.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c33">
+  <header><span class="num">33</span><h3>Williamson–Hall por amostra <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Cinco painéis, um por amostra: pontos (x = 4 sen θ, y = β cos θ), a reta ajustada e um quadro com D, ε e r. Se uma amostra tiver poucos picos, o painel avisa “poucos picos”.</p>
+    <div class="vars"><b>Precisa de:</b> <code>wh_fits</code> (célula 28). O eixo y é compartilhado entre os painéis.</div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Mostre como ler o gráfico: <b>onde a reta cruza o eixo y</b> está o tamanho (intercepto = Kλ/D); <b>a inclinação</b> é a microdeformação. Comparem 20% (r = 0,89, pontos mais alinhados) com 10% (r = 0,07, pontos dispersos): o r do quadro avisa o quanto o ajuste merece confiança.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>O título da figura diz: <em>“β = FWHM, sem correção instrumental”</em>. Reforce que D e ε são <b>aparentes</b>.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c34">
+  <header><span class="num">34</span><h3>Cristalito × microdeformação <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Um ponto por amostra, com ε no eixo x, D (WH) no eixo y, cor pela dopagem (mapa <i>cividis</i>) e rótulo “x%” ao lado.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Pergunte se há correlação entre D e ε. Em ajustes de Williamson–Hall, D e ε saem do mesmo ajuste e, por isso, <b>tendem a estar correlacionados por construção</b>; não é evidência física independente.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c35">
+  <header><span class="num">35</span><h3>Correlação entre as características e com a dopagem <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Seleciona as colunas numéricas (sem <code>n_points</code>), desenha o mapa de calor de correlação entre elas e imprime, para cada característica, o <b>r de Pearson</b> e o <b>p-valor</b> com a % de Nd. Valores faltantes são substituídos pela mediana da coluna.</p>
+    <div class="box screen"><b class="t">Na tela (valores reais)</b>
+      <p>Os maiores |r| são <code>scherrer_D_nm</code> (r = +0,811; p = 0,096), <code>fwhm_main_deg</code> (r = −0,761; p = 0,135) e <code>std_norm</code> (r = −0,684; p = 0,203). <b>Nenhum p-valor chega a 0,05.</b></p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Esta é uma ótima lição de estatística com n pequeno. Com 5 amostras, é preciso |r| &gt; 0,878 para chegar a p &lt; 0,05. Nenhuma característica consegue; então tudo é <b>indicativo</b>, nada é confirmação. A célula é intencionalmente honesta sobre isso (o comentário do código diz “n=5: correlação é indicativa, não teste poderoso”).</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c36">
+  <header><span class="num">36</span><h3>Nota: nem toda coluna é “física da dopagem” <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Fecha o Módulo 4 com um aviso sobre o que não deveria ir para o modelo:</p>
+    <ul>
+      <li><code>n_points</code> é um artefato do arquivo (todos têm 6 732 pontos);</li>
+      <li><code>i_max_raw</code> mistura detector e amostra;</li>
+      <li>Scherrer e WH herdam o FWHM e a ausência de β<sub>inst</sub>;</li>
+      <li>intercepto de WH <b>negativo</b> ⇒ D indefinido (o instrumento ou o strain dominam).</li>
+    </ul>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>A frase final é a mensagem: <em>“o cientista escolhe o que entra no modelo”</em>. Escolher características é uma decisão de física, não de programação. Note que <code>i_max_raw</code> ainda entra no ML (célula 38), de modo que vale perguntar à turma se deveria.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 5 ===================== -->
+<div class="module" id="m5">
+  <span class="tag">Módulo 5</span>
+  <h2>Modelos de Machine Learning</h2>
+  <p class="sub">Células 37 a 43. A pergunta: dá para estimar a % de Nd a partir das características do DRX? Com 5 amostras, a resposta honesta é “não de forma confiável”, e o módulo existe para mostrar <em>por quê</em>.</p>
+</div>
+
+<article class="cell" id="c37">
+  <header><span class="num">37</span><h3>A pergunta, o Leave-One-Out e as métricas <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <ul>
+      <li><b>Alvo y:</b> <code>nd_percent</code> (10, 20, 30, 40, 50). <b>Entrada X:</b> as características numéricas. É <b>regressão</b> (alvo contínuo), não classificação.</li>
+      <li><b>Por que não um split 80/20?</b> Com 5 amostras, 20% de teste é <em>um</em> ponto; qualquer R² nele é loteria. Usa-se <b>Leave-One-Out (LOO)</b>: treina em 4, testa na que ficou de fora, e repete 5 vezes.</li>
+      <li><b>Métricas:</b> R² (fração da variância explicada; no LOO pode ser <em>negativo</em>), MAE (erro absoluto médio, em pontos percentuais de Nd) e RMSE (mesma unidade, penaliza erros grandes).</li>
+      <li><b>Sempre comparar</b> o ajuste (treino nas 5) com o LOO. A diferença é a “cara” do overfitting.</li>
+      <li><b>Quatro modelos:</b> regressão linear, k-NN (k=2), SVR com kernel RBF e Random Forest.</li>
+    </ul>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Desenhe 5 pontos no quadro e faça o LOO na mão: cubra um ponto, ajuste com os outros quatro, preveja o ponto coberto. Depois repita. Isso torna a ideia muito concreta antes de ver o código.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c38">
+  <header><span class="num">38</span><h3>Treino e avaliação dos quatro modelos <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Monta X e y, define como avaliar um modelo e roda os quatro.</p>
+    <div class="vars"><b>Cria:</b> <code>TARGET</code>, <code>X_cols</code>, <b><code>X</code></b>, <b><code>y</code></b>, <code>eval_model</code>, <b><code>metrics_df</code></b>, <b><code>preds</code></b> · <b>Precisa de:</b> <code>feature_view</code> (célula 27).</div>
+    <ol>
+      <li><b>Escolha das colunas.</b> <code>X_cols</code> lista <b>13</b> características (não inclui <code>n_points</code>, que é artefato do arquivo, nem o alvo).</li>
+      <li><b>Montagem.</b> <code>X</code> (5 × 13) e <code>y</code> (os cinco valores de Nd).</li>
+      <li><b>Imputação.</b> Se alguma característica vier <code>NaN</code> (por exemplo, nenhum pico encontrado), substitui pela média da coluna. O comentário avisa: com n = 5 isso é frágil e deve aparecer no relatório.</li>
+      <li><b><code>eval_model(name, estimator)</code>.</b> Cria um <code>Pipeline</code> com <code>StandardScaler</code> (deixa cada coluna com média 0 e variância 1) seguido do modelo. Sem o escalonador, graus, unidades arbitrárias e nm se misturariam. Depois: <code>cross_val_predict</code> com <code>LeaveOneOut</code> dá as previsões “honestas” (cada amostra prevista quando ficou fora do treino); em seguida treina nas 5 e prevê as próprias 5 (o “ajuste”, otimista). Devolve R², MAE e RMSE nas duas situações.</li>
+      <li><b>Os quatro modelos:</b> <code>LinearRegression()</code>, <code>KNeighborsRegressor(n_neighbors=2)</code>, <code>SVR(kernel="rbf", C=10)</code> e <code>RandomForestRegressor(n_estimators=200, max_depth=3, random_state=42)</code>.</li>
+      <li><b>Saída.</b> Imprime o regime (5 amostras, 13 características: <b>p &gt; n</b>) e a tabela de métricas.</li>
+    </ol>
+    <div class="box ok"><b class="t">Detalhe importante: o escalonador está dentro do LOO</b>
+      <p>Como o <code>StandardScaler</code> faz parte do <code>Pipeline</code>, em cada rodada ele é ajustado <b>só com as 4 amostras de treino</b>. Isso evita <em>vazamento de dados</em> (data leakage). Vale mencionar: é a forma correta de fazer.</p>
+    </div>
+    <div class="box screen"><b class="t">Na tela — a tabela de métricas (valores reais)</b>
+      <div class="tablewrap" style="margin-top:8px">
+        <table>
+          <thead><tr><th>Modelo</th><th>R² ajuste</th><th>MAE ajuste</th><th>RMSE ajuste</th><th>R² LOO</th><th>MAE LOO</th><th>RMSE LOO</th></tr></thead>
+          <tbody>
+            <tr><td>Regressão linear</td><td>1,000</td><td>0,000</td><td>0,000</td><td>−1,564</td><td>18,374</td><td>22,646</td></tr>
+            <tr><td>k-NN (k=2)</td><td>0,300</td><td>10,000</td><td>11,832</td><td>0,050</td><td>12,000</td><td>13,784</td></tr>
+            <tr><td>SVR (RBF)</td><td>0,715</td><td>5,161</td><td>7,546</td><td>−0,512</td><td>15,022</td><td>17,391</td></tr>
+            <tr><td>Random Forest</td><td>0,819</td><td>5,580</td><td>6,008</td><td>−0,870</td><td>17,650</td><td>19,339</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:8px">MAE e RMSE são em pontos percentuais de Nd. Antes da tabela aparece: <code>n_amostras = 5 | n_features = 13 (regime perigoso: p &gt; n)</code>.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p><b>A regressão linear acerta tudo no ajuste (R² = 1,000, erro 0,000) e é a pior no LOO (−1,564).</b> Por quê? Há 13 incógnitas (coeficientes) e só 5 equações; o sistema é indeterminado e a reta passa exatamente por todos os pontos, memorizando. É o exemplo mais limpo de overfitting do curso.</p>
+      <p>O k-NN mostra o oposto: erra no ajuste (R² = 0,30), porque com k = 2 cada amostra é prevista pela média dela mesma e do vizinho mais próximo; mas é o único modelo com R² LOO positivo.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção — qual é a “linha de base” correta do R² no LOO?</b>
+      <p>O texto diz que R² negativo é “pior que prever a média”. No LOO com n = 5 há uma sutileza: um modelo que sempre prevê a <em>média das outras quatro amostras</em> tem R² LOO de <b>−0,5625</b> (e não 0), porque a média das quatro restantes está sempre deslocada da amostra que ficou de fora. Então a régua justa neste caso é −0,56: só o k-NN (0,05) a supera, o SVR (−0,512) praticamente empata, e o Random Forest (−0,87) e a linear (−1,56) ficam abaixo dela. Se um aluno questionar, esta é a explicação.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c39">
+  <header><span class="num">39</span><h3>Ajuste × Leave-One-Out (dispersão) <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Dois gráficos de dispersão lado a lado, com o Nd real no eixo x e o Nd previsto no eixo y: à esquerda o ajuste nas 5 amostras (“otimista”), à direita o LOO (“honesto”). A linha tracejada é o ideal y = x e os eixos têm a mesma escala (5 a 55). Salva <code>05_ajuste_vs_loo.png</code>.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Pergunte onde estão os pontos nos dois painéis. No da esquerda, vários modelos ficam perto da diagonal; no da direita, espalham-se muito. O título resume: <em>o ajuste bonito à esquerda não precisa sobreviver ao LOO</em>.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c40">
+  <header><span class="num">40</span><h3>Barras de R², MAE e RMSE <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Três gráficos de barras (R², MAE e RMSE), cada um comparando ajuste (azul) e LOO (laranja) para os quatro modelos. Uma linha em zero no painel do R² facilita ver o que é negativo. Salva <code>05_metricas_barras.png</code>.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>É a visão resumida da célula 38. Observe a diferença de altura entre as barras azuis e laranjas: <b>quanto maior a diferença, maior o overfitting</b>. As barras de erro (MAE e RMSE) do LOO são maiores que as do ajuste em todos os modelos.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c41">
+  <header><span class="num">41</span><h3>Previsões do Leave-One-Out, amostra a amostra <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Monta uma tabela com o Nd real e a previsão LOO de cada modelo.</p>
+    <div class="box screen"><b class="t">Na tela (valores reais)</b>
+      <div class="tablewrap" style="margin-top:8px">
+        <table>
+          <thead><tr><th>Nd real</th><th>Linear</th><th>k-NN</th><th>SVR</th><th>Random Forest</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>13,84</td><td>30,00</td><td>33,42</td><td>38,00</td></tr>
+            <tr><td>20</td><td><b>61,72</b></td><td>30,00</td><td>33,55</td><td>36,90</td></tr>
+            <tr><td>30</td><td>42,23</td><td>45,00</td><td>31,23</td><td>39,60</td></tr>
+            <tr><td>40</td><td>29,23</td><td>40,00</td><td>28,53</td><td>31,45</td></tr>
+            <tr><td>50</td><td>26,69</td><td>35,00</td><td>24,56</td><td>24,80</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Esta é a tabela que “fala” sozinha. A regressão linear prevê <b>61,7% de Nd para a amostra de 20%</b>, valor fora de qualquer faixa razoável (a composição só vai até 50%). Os modelos tendem a prever valores centrais (30–40%) para a amostra de 10%, porque, ao deixá-la de fora, ela fica na <b>borda do intervalo</b> e k-NN, SVR e árvores não extrapolam bem. Peça à turma que identifique o que cada modelo faz de errado.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c42">
+  <header><span class="num">42</span><h3>Bases pequenas, dados sintéticos e overfitting <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Explica o que vem a seguir. Cinco pontos num espaço de dezenas de características é o regime em que <b>qualquer modelo flexível memoriza</b>. Dados sintéticos (ruído multiplicativo em X e pequeno em y) aumentam n, mas <b>não trazem física nova</b>: são ecos das mesmas cinco medidas. Servem para ensinar o fluxo treino/teste, não para reivindicar um modelo publicável. O aviso vai no JSON que o LLM recebe.</p>
+  </div>
+</article>
+
+<article class="cell" id="c43">
+  <header><span class="num">43</span><h3>Experimento com dados sintéticos <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Cria dados artificiais a partir das 5 amostras, treina um Random Forest e mede o desempenho num conjunto de teste.</p>
+    <div class="vars"><b>Cria:</b> <code>X_syn</code>, <code>y_syn</code>, <code>syn_pipe</code>, <b><code>syn_metrics</code></b> · <b>Precisa de:</b> <code>X</code>, <code>y</code> (célula 38).</div>
+    <ol>
+      <li><code>rng = np.random.default_rng(42)</code>: gerador aleatório com semente fixa (resultado reproduzível).</li>
+      <li>Para cada amostra real, gera <b>25 “ecos”</b>: multiplica cada característica por um número aleatório próximo de 1 (desvio de 4%) e soma ao Nd um ruído pequeno (desvio 0,4). Total: 125 pontos.</li>
+      <li><code>train_test_split(test_size=0.25)</code> separa 93 para treino e 32 para teste.</li>
+      <li>Treina um <code>Pipeline</code> (escalonador + Random Forest de profundidade 6) e mede R², MAE e RMSE no teste.</li>
+      <li>Imprime um dicionário em JSON e desenha o gráfico real × previsto. Salva <code>05_sintetico.png</code>.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>O JSON com <b>R² = 0,945</b>, MAE = 2,24 p.p., RMSE = 3,38 p.p., <code>n_treino = 93</code> e <code>n_teste = 32</code>, e um gráfico em que os pontos ficam colados à diagonal.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção — este R² de 0,945 é enganoso, e é isso que precisa ser dito em aula</b>
+      <p>Compare: com os dados reais, o melhor R² LOO é 0,05; com os sintéticos, 0,945. Nada melhorou no modelo; o que mudou é que o conjunto de teste agora contém <b>cópias ruidosas das mesmas 5 amostras que estão no treino</b>. Quando o teste é “quase igual” ao treino, o modelo só precisa memorizar. Isso é vazamento de dados e mostra por que o split aleatório não vale quando as linhas não são independentes.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Faça a pergunta: <em>“esse 0,945 significa que o modelo prevê Nd bem?”</em> Depois deixe a turma chegar sozinha à conclusão. É um dos melhores momentos de ensino do curso: o mesmo algoritmo dá 0,945 ou −0,87 dependendo de <b>como se avalia</b>.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 6 ===================== -->
+<div class="module" id="m6">
+  <span class="tag">Módulo 6</span>
+  <h2>LLM como copiloto científico</h2>
+  <p class="sub">Células 44 a 50. O modelo de linguagem recebe um JSON com resultados já calculados e escreve um relatório. Ele <b>não calcula</b>. Funciona sem chave (relatório local) e, com chave do Gemini, também conversa com os resultados.</p>
+</div>
+
+<article class="cell" id="c44">
+  <header><span class="num">44</span><h3>O que o LLM deve e não deve fazer <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define o contrato: o LLM interpreta métricas em linguagem de relatório, explica R², MAE e RMSE <em>neste experimento</em>, resume o que os difratogramas mostraram e <b>deve recusar-se a inventar</b> picos, fases ou valores que não estejam no JSON.</p>
+    <p>Sem chave, usa-se um gerador <b>local e determinístico</b>, ainda assim baseado só nos números do pipeline, para a aula não parar. O texto também lembra a instalação opcional <code>%pip install -q google-genai openai</code> (na prática, o código instala sozinho o que faltar).</p>
+  </div>
+</article>
+
+<article class="cell" id="c45">
+  <header><span class="num">45</span><h3>O dossiê (JSON) que o LLM recebe <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Reúne <em>todos</em> os resultados num dicionário Python, que será convertido em JSON. É o único contato entre o pipeline e o LLM.</p>
+    <div class="vars"><b>Cria:</b> <b><code>dossie</code></b> · <b>Precisa de:</b> praticamente todas as variáveis anteriores.</div>
+    <table>
+      <thead><tr><th>Chave do dossiê</th><th>O que contém</th></tr></thead>
+      <tbody>
+        <tr><td><code>material</code>, <code>tecnica</code></td><td>Nome do sistema e da técnica.</td></tr>
+        <tr><td><code>n_amostras_reais</code>, <code>dopagens_percent</code></td><td>5 e [10, 20, 30, 40, 50].</td></tr>
+        <tr><td><code>leitura</code></td><td>Número de pontos e faixa de 2θ de cada arquivo.</td></tr>
+        <tr><td><code>caracteristicas</code></td><td>A tabela <code>feature_view</code> (célula 27) arredondada.</td></tr>
+        <tr><td><code>n_registros_de_pico</code></td><td>36.</td></tr>
+        <tr><td><code>williamson_hall</code></td><td>D, ε, r e número de picos por amostra.</td></tr>
+        <tr><td><code>ml_loo</code>, <code>previsoes_LOO</code></td><td>As métricas e as previsões do Leave-One-Out dos quatro modelos.</td></tr>
+        <tr><td><code>dados_sinteticos</code></td><td>As métricas sintéticas <b>mais o aviso</b> de que não substituem experimento.</td></tr>
+        <tr><td><code>instrucoes_ao_llm</code></td><td>Quatro regras: não invente números; deixe claro que o LLM não calculou nada; discuta overfitting e o regime n = 5; escreva em português, tom de relatório de minicurso.</td></tr>
+      </tbody>
+    </table>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Um recorte do JSON (só <code>material</code>, <code>n_amostras_reais</code> e <code>ml_loo</code>) para não poluir a tela: os números da tabela da célula 38 em formato de dicionário.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Este dicionário <b>é</b> a “interface” entre a ciência e o LLM. Pergunte: <em>“se eu esquecer de colocar o aviso dos dados sintéticos aqui, o que o LLM pode concluir?”</em> (que o R² de 0,945 é um bom resultado!). A qualidade do relatório depende de o dossiê ser honesto.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c46">
+  <header><span class="num">46</span><h3>As funções do copiloto e a geração do relatório <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define o prompt de sistema, o gerador local, as chamadas aos provedores de LLM e a função que decide quem responde. No final, gera e imprime o relatório.</p>
+    <div class="vars"><b>Cria:</b> <code>SYSTEM</code>, <code>relatorio_local</code>, <code>GEMINI_MODELS</code>, <code>_garantir_genai</code>, <code>_try_gemini</code>, <code>_try_openai</code>, <code>get_secret</code>, <code>_chamar_llm</code>, <code>explicar_com_llm</code>, <b><code>relatorio</code></b>, <b><code>fonte</code></b> · <b>Precisa de:</b> <code>dossie</code> (célula 45).</div>
+    <ol>
+      <li><b><code>SYSTEM</code> — o prompt de sistema.</b> Diz ao modelo que ele é um copiloto de minicurso, que <b>não calcula</b> difração, FWHM, Scherrer, Williamson–Hall nem métricas, que só interpreta o JSON, que deve dizer “não consta” quando algo faltar, e fixa a estrutura da resposta em cinco partes: dados e pré-processamento; características físicas; modelos e métricas; limites e overfitting; síntese para os alunos.</li>
+      <li><b><code>relatorio_local(dossie)</code> — o plano B.</b> Monta o texto sem nenhum LLM, só inserindo em frases fixas os números que já estão no dossiê (características por amostra, métricas LOO, dados sintéticos, mensagem final). É determinístico: o mesmo dossiê sempre dá o mesmo texto.</li>
+      <li><b><code>GEMINI_MODELS</code> e <code>_try_gemini</code>.</b> Tenta, em ordem, <code>gemini-flash-latest</code> (um alias do Google que aponta para o Flash atual), <code>gemini-3.5-flash</code> e <code>gemini-3.1-flash-lite</code>. Se um modelo for descontinuado, o próximo é usado. Se todos falharem, junta as mensagens de erro e levanta uma exceção. <code>_garantir_genai</code> instala o pacote <code>google-genai</code> se ele não existir.</li>
+      <li><b><code>_try_openai</code>.</b> Alternativa com <code>gpt-4o-mini</code>, <code>temperature=0.2</code> (respostas mais estáveis). Usada só se houver a chave <code>OPENAI_API_KEY</code>.</li>
+      <li><b><code>get_secret(nome)</code>.</b> Lê a chave primeiro dos <em>Secrets</em> do Colab e, se não estiver lá (por exemplo, fora do Colab), da variável de ambiente.</li>
+      <li><b><code>_chamar_llm(prompt)</code>.</b> A ordem de tentativa: se houver chave Gemini, tenta o Gemini; se falhar, imprime “Gemini indisponível: …” e tenta o OpenAI; se nada funcionar, devolve “sem resposta”. Remove espaços da chave com <code>.strip()</code>.</li>
+      <li><b><code>explicar_com_llm(dossie)</code>.</b> Converte o dossiê em JSON, junta com <code>SYSTEM</code> e chama <code>_chamar_llm</code>. Se não houver resposta, usa <code>relatorio_local</code>. Devolve o texto e a <b>fonte</b> (“gemini”, “openai” ou “local”).</li>
+      <li><b>Execução.</b> <code>relatorio, fonte = explicar_com_llm(dossie)</code> e imprime a fonte e o relatório.</li>
+    </ol>
+    <details><summary>Ver a lógica de decisão</summary>
+<pre><code>def explicar_com_llm(dossie):
+    payload = json.dumps(dossie, ensure_ascii=False, indent=2)
+    prompt = SYSTEM + "\n\nJSON do pipeline:\n" + payload
+    texto, fonte = _chamar_llm(prompt)
+    if texto is None:
+        return relatorio_local(dossie), "local"
+    return texto, fonte</code></pre>
+    </details>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Sem chave: <code>Fonte da interpretação: local</code> seguido do relatório com as características por amostra, as métricas dos quatro modelos, o aviso dos sintéticos (R² = 0,945, 93 treino, 32 teste) e a “Mensagem para a turma”. Com chave válida, a linha mostra <code>gemini</code> e o texto é escrito pelo modelo.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Esta é a célula onde se vê que <b>o LLM é um componente substituível</b>: se ele não responder, o pipeline continua. Mostre também que o prompt é só texto, e que ele é o que mantém o modelo “na linha”. Boa atividade: pedir a um aluno para trocar uma regra do <code>SYSTEM</code> (por exemplo, remover “Se algo não estiver no JSON, diga que não consta”) e observar se o relatório passa a inventar coisas.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>O que é enviado ao Google (ou à OpenAI) é o dossiê em JSON, isto é, <b>apenas números calculados</b>, não os arquivos CSV. Mesmo assim, avise os alunos de que o conteúdo sai do computador deles. Trate qualquer texto do LLM como <b>rascunho</b> e confira cada número com as tabelas.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c47">
+  <header><span class="num">47</span><h3>Passo a passo para ligar o Gemini gratuito <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Instrui o aluno, em cinco passos, a ligar o LLM externo.</p>
+    <ol>
+      <li><b>Criar a chave</b> em aistudio.google.com/apikey (conta Google, sem cartão). A chave é um texto longo que começa com <code>AIza</code>.</li>
+      <li><b>Guardar no Colab:</b> ícone de chave 🔑 na lateral esquerda → <em>Adicionar novo segredo</em> → nome exatamente <code>GEMINI_API_KEY</code> → colar o valor → ligar o botão <b>Acesso ao notebook</b>.</li>
+      <li><b>Testar a conexão</b> com a célula seguinte.</li>
+      <li><b>Gerar o relatório com o LLM:</b> executar de novo a célula 46 e conferir que a fonte mudou de <code>local</code> para <code>gemini</code>.</li>
+      <li><b>Conversar</b> com <code>perguntar("...")</code>.</li>
+    </ol>
+    <div class="box warn"><b class="t">Atenção — os erros mais prováveis em sala</b>
+      <ul>
+        <li><b>Colar o ID do projeto em vez da chave.</b> Na página do Google, os “detalhes do projeto” (nome, número, ID) parecem informação importante, mas <b>não são a chave</b>. A chave começa com <code>AIza</code>.</li>
+        <li><b>Esquecer de ligar “Acesso ao notebook”.</b> O segredo existe, mas o notebook não consegue lê-lo.</li>
+        <li><b>Errar o nome</b> do segredo (precisa ser exatamente <code>GEMINI_API_KEY</code>).</li>
+        <li><b>Todos usarem a mesma chave.</b> O limite gratuito é por projeto; uma chave para a turma toda acaba rápido e fica exposta. Cada aluno cria a sua.</li>
+        <li>Cuidados: nunca colar a chave em células de código, no GitHub ou em prints de tela. Se vazar, apagar no AI Studio e criar outra.</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c48">
+  <header><span class="num">48</span><h3>Teste de conexão com o Gemini <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Verifica, passo a passo, se a chave existe e se o Gemini responde, e diz ao aluno <b>o que corrigir</b> em cada caso. Nunca imprime a chave.</p>
+    <div class="vars"><b>Cria:</b> <code>testar_gemini</code> · <b>Precisa de:</b> <code>_try_gemini</code> (célula 46).</div>
+    <ol>
+      <li><b>Lê a chave</b> dos Secrets e distingue os problemas pelo tipo de erro: segredo ausente, acesso ao notebook desligado, ou erro ao ler os Secrets.</li>
+      <li><b>Sem chave:</b> avisa que está tudo bem, pois o relatório local funciona sem ela.</li>
+      <li><b>Com chave:</b> mostra o tamanho (por exemplo, “39 caracteres”) e avisa se ela não começar com <code>AIza</code>.</li>
+      <li><b>Faz uma chamada mínima</b> (“Responda apenas com a palavra: OK”) e traduz a falha: chave recusada, limite de uso atingido, sem permissão ou região não suportada, modelo indisponível. Para qualquer outro erro, mostra o detalhe técnico.</li>
+      <li>Se der certo: <code>✅ Gemini respondeu</code>.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela — mensagens possíveis</b>
+      <ul>
+        <li><code>ℹ️ Nenhuma chave configurada…</code> — sem chave; nada a corrigir se quiser seguir com o relatório local.</li>
+        <li><code>❌ Segredo GEMINI_API_KEY não encontrado…</code> — nome errado ou segredo não criado.</li>
+        <li><code>❌ O segredo existe, mas falta ligar o botão ‘Acesso ao notebook’…</code></li>
+        <li><code>❌ A chave foi recusada pelo Google…</code> — copiar de novo no AI Studio.</li>
+        <li><code>❌ Limite de uso gratuito atingido…</code> — esperar 1 minuto.</li>
+        <li><code>✅ Gemini respondeu: 'OK'</code> — pronto.</li>
+      </ul>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Aproveite para falar de <b>tratamento de erros</b>: um bom programa não só falha, ele diz o que consertar. E que testar uma conexão com uma chamada mínima é uma prática comum antes de executar tarefas maiores.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c49">
+  <header><span class="num">49</span><h3>Perguntar ao copiloto <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Apresenta a função <code>perguntar("...")</code>, que reenvia o JSON de resultados <em>junto com a pergunta</em>, de modo que a resposta fique ancorada nos números do pipeline. O LLM lembra das últimas perguntas da conversa; <code>reiniciar=True</code> começa do zero.</p>
+    <p>Sugere três perguntas: sobre a diferença entre o D de Williamson–Hall e o de Scherrer em 30%; sobre o significado do R² negativo no LOO; e sobre as limitações de tirar conclusões físicas com 5 amostras.</p>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Insista na frase final do cartão: o LLM <b>não calculou nada</b>. Se a resposta citar um número, o aluno deve procurá-lo nas tabelas acima. Se não encontrar, é um sinal de alerta.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c50">
+  <header><span class="num">50</span><h3>A função <code>perguntar</code> <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Define a função de perguntas e já faz uma pergunta de exemplo (sobre o R² negativo).</p>
+    <div class="vars"><b>Cria:</b> <code>HISTORICO_CHAT</code>, <code>perguntar</code> · <b>Precisa de:</b> <code>dossie</code>, <code>SYSTEM</code>, <code>_chamar_llm</code> (células 45 e 46).</div>
+    <ol>
+      <li><code>HISTORICO_CHAT</code> é uma lista de pares (pergunta, resposta): a “memória curta” da conversa. Só as <b>4 últimas trocas</b> são reenviadas.</li>
+      <li><code>perguntar(pergunta, reiniciar=False)</code> monta um <em>prompt</em> com: o <code>SYSTEM</code>; uma instrução extra (“agora é uma conversa; responda de forma direta e curta, usando somente o JSON; a estrutura em cinco partes vale só para o relatório completo”); o JSON do dossiê; a conversa até então; e a pergunta atual.</li>
+      <li>Chama <code>_chamar_llm</code>. Se não houver LLM disponível, avisa e sai sem erro.</li>
+      <li>Guarda a troca no histórico e exibe a resposta formatada (<code>Markdown</code> do IPython; se não for possível, imprime texto simples), precedida da fonte entre parênteses.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>Sem chave: <code>Sem LLM disponível. Configure a chave (Passos 1 a 4 acima) e tente de novo.</code> Com chave, a resposta do Gemini sobre o R² negativo aparece formatada. A célula demora alguns segundos porque faz uma chamada à API (na sua execução, cerca de 31 s).</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p><b>Onde digitar as perguntas dos alunos:</b> numa célula de código <em>nova</em>, abaixo desta, com <code>perguntar("sua pergunta")</code>; troque o texto e execute de novo para a próxima pergunta. Sugira que cada aluno faça uma pergunta sua e compare a resposta com a tabela de resultados.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>Se o Gemini tiver respondido bem uma vez e na seguinte aparecer “limite atingido”, é a cota gratuita por minuto. Não é erro do notebook.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== MÓDULO 7 ===================== -->
+<div class="module" id="m7">
+  <span class="tag">Módulo 7</span>
+  <h2>Pipeline híbrido completo</h2>
+  <p class="sub">Células 51 a 54. Reúne tudo numa única função: do CSV ao relatório.</p>
+</div>
+
+<article class="cell" id="c51">
+  <header><span class="num">51</span><h3>Do CSV ao relatório: o fluxo completo <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Anuncia a próxima célula e mostra o fluxo inteiro: difratograma → leitura → pré-processamento → características → Machine Learning (Ridge + LOO) → avaliação → LLM → interpretação científica → relatório final. A aula não foi uma sequência solta de gráficos: é <b>um único caminho</b>.</p>
+  </div>
+</article>
+
+<article class="cell" id="c52">
+  <header><span class="num">52</span><h3><code>run_hybrid_pipeline</code>: o minicurso numa função <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Reexecuta, <b>do zero</b>, toda a cadeia (leitura, pré-processamento, características, ML e relatório) dentro de uma única função. É útil para o aluno mudar um parâmetro e rodar tudo de novo.</p>
+    <div class="vars"><b>Cria:</b> <code>run_hybrid_pipeline</code>, <code>_prep</code>, <b><code>tabela_final</code></b>, <b><code>saida</code></b> · <b>Precisa de:</b> as funções das células 7, 21, 27 e 46, e <code>X_cols</code>, <code>TARGET</code>, <code>dossie</code>.</div>
+    <ol>
+      <li><b>Leitura e pré-processamento:</b> <code>load_sample</code> e <code>preprocess</code> para cada dopagem.</li>
+      <li><b>Características:</b> <code>extract_features</code> e a mesma imputação pela média da coluna.</li>
+      <li><b>Modelo:</b> um <code>Pipeline</code> com <code>StandardScaler</code> e <b>Ridge</b> (<code>alpha=1.0</code>), isto é, regressão linear com penalização que reduz os coeficientes. Calcula as previsões LOO e depois ajusta nas 5 amostras.</li>
+      <li><b>Resumo:</b> monta um dicionário com as características e as métricas (R², MAE, RMSE do LOO).</li>
+      <li><b>LLM:</b> chama <code>explicar_com_llm</code> com um dossiê menor (só Ridge) e guarda o texto e a origem.</li>
+      <li>Devolve os pré-processados, a tabela de características e o resumo.</li>
+    </ol>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p><code>Origem da interpretação: local</code> (ou <code>gemini</code>), <code>Ridge LOO: {'R2': -1.633, 'MAE': 17.956, 'RMSE': 22.947}</code> e a tabela de características (a mesma da célula 27).</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Aqui o conceito é <b>reprodutibilidade</b>: o pipeline inteiro cabe em uma função, e qualquer pessoa pode rodá-la e obter o mesmo resultado. Atividade: mudar <code>alpha</code> e ver o R² LOO. Valores medidos aqui: <code>alpha=1</code> → LOO −1,63 (ajuste 0,97); <code>alpha=10</code> → −0,83 (ajuste 0,67); <code>alpha=100</code> → −0,37 (ajuste 0,21). Regularizar <b>melhora o LOO</b> (com 100 passa a referência de −0,56 da célula 38), mas o ajuste despenca: troca-se overfitting por viés, e o R² LOO continua negativo. Com 5 amostras, nenhum <code>alpha</code> resolve o problema.</p>
+    </div>
+    <div class="box warn"><b class="t">Atenção</b>
+      <p>A função usa variáveis globais criadas antes (<code>X_cols</code>, <code>TARGET</code>, <code>dossie</code>). Se o aluno executar só esta célula numa sessão nova, dará <code>NameError</code>. Peça <em>Executar tudo</em>.</p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c53">
+  <header><span class="num">53</span><h3>Relatório do pipeline completo <span class="kind code">código</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Imprime <code>saida["relatorio"]</code>, o relatório produzido pelo pipeline da célula 52 (local ou do LLM).</p>
+    <div class="box screen"><b class="t">Na tela</b>
+      <p>O mesmo formato da célula 46, com as características por amostra e a linha do modelo final: <b>Ridge, R² LOO = −1,63; MAE = 17,96 p.p.; R² de ajuste = 0,971</b>, e a mensagem final para a turma.</p>
+    </div>
+    <div class="box talk"><b class="t">Como explicar</b>
+      <p>Releia com a turma a linha do Ridge: ajuste de 0,971 e LOO de −1,63. É o resumo do Módulo 5 em uma frase: <em>o modelo parece ótimo quando olhamos para os dados que ele já viu e péssimo quando testamos com honestidade.</em></p>
+    </div>
+  </div>
+</article>
+
+<article class="cell" id="c54">
+  <header><span class="num">54</span><h3>Encerramento <span class="kind text">texto</span></h3></header>
+  <div class="body">
+    <p><b>O que faz.</b> Resume a trilha em sete pontos: o conceito de IA científica e a divisão de papéis; os dados reais de DRX; o pré-processamento reproduzível; as características, Scherrer e Williamson–Hall; os quatro modelos, o LOO e o overfitting; o LLM como redator/copiloto; e o pipeline inteiro num só fluxo.</p>
+    <div class="box talk"><b class="t">Como explicar — a mensagem para levar para casa</b>
+      <p><b>“Se o número não saiu de uma célula de cálculo, ele não entra no artigo, nem quando a frase do LLM estiver convincente.”</b> Termine com isso. É a ideia que organiza todo o curso.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== PONTOS DELICADOS ===================== -->
+<section class="block" id="atencao">
+  <h2>Pontos delicados para você se preparar</h2>
+  <p class="sub">Resumo, em um só lugar, das fragilidades científicas e técnicas que apareceram ao longo do notebook. São as perguntas mais prováveis de um aluno atento, e várias são boas lições, não defeitos a esconder.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Onde</th><th>O ponto</th><th>Como tratar em aula</th></tr></thead>
+      <tbody>
+        <tr><td>Células 27 e 33</td><td><b>Williamson–Hall instável.</b> D (WH) vai de 33 a 264 nm; em 10% o ajuste tem r = 0,07 (os pontos não formam reta). D = Kλ/intercepto “explode” quando o intercepto é pequeno.</td><td>Mostrar o r no quadro de cada painel e dizer que D e ε de um ajuste com r baixo não têm significado.</td></tr>
+        <tr><td>Células 27 e 28</td><td><b>Pico principal de 10% em 31,9° e dos demais em ~32,4–32,7°</b>, com FWHM de 0,43° contra ~0,2°. O notebook não indexa (não atribui hkl) nem separa reflexões vizinhas.</td><td>Apresentar como hipótese a testar com Rietveld; não como efeito do tamanho de cristalito.</td></tr>
+        <tr><td>Célula 32</td><td><b>D de Scherrer cai com 2θ</b> em 4 de 5 amostras (r entre −0,79 e −0,93). Logo o alargamento não é só de tamanho.</td><td>Usar como motivação do Williamson–Hall e da correção instrumental, que não foi feita.</td></tr>
+        <tr><td>Célula 21</td><td>A janela Savitzky–Golay de 21 pontos (≈0,22°) é da ordem do FWHM mínimo (≈0,19°).</td><td>Atividade: variar <code>savgol_window</code> e ver quanto o FWHM muda.</td></tr>
+        <tr><td>Célula 17</td><td>A escala do mapa de correlação vai de 0,7 a 1, mas muitos valores reais são menores (0,05 a 0,24 para a amostra de 10%).</td><td>Ler os números anotados, não as cores; ou trocar <code>vmin</code> para 0.</td></tr>
+        <tr><td>Célula 38</td><td>R² negativo no LOO é comparado a “prever a média”, mas no LOO com n = 5 a média dá −0,5625.</td><td>Usar −0,56 como referência: só o k-NN (0,05) a supera; o SVR (−0,51) empata.</td></tr>
+        <tr><td>Célula 43</td><td><b>R² = 0,945 nos sintéticos é vazamento:</b> o teste contém cópias ruidosas do treino.</td><td>Contrastar com o LOO real. É uma das melhores lições do curso.</td></tr>
+        <tr><td>Células 26 e 38</td><td>Não há calibração de 2θ nem subtração do alargamento instrumental. O modelo tem 13 características para 5 amostras (p &gt; n); <code>i_max_raw</code> mistura detector e amostra e entra no ML.</td><td>Dizer que D e ε são <em>aparentes</em> e que o ML é demonstração.</td></tr>
+        <tr><td>Células 18 e 42</td><td>Interpolações e sintéticos não são amostras novas.</td><td>Repetir a palavra “eco”: não trazem física nova.</td></tr>
+        <tr><td>Célula 46</td><td>O texto do LLM é fluente, mesmo quando errado. O JSON sai do computador do aluno.</td><td>Sempre conferir cada número do relatório com as tabelas; avisar sobre o envio dos dados.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== DÚVIDAS ===================== -->
+<section class="block" id="faq">
+  <h2>Dúvidas e erros frequentes</h2>
+  <p class="sub">Para ter à mão durante a prática.</p>
+  <div class="panel">
+    <dl class="faq" style="margin:0">
+      <dt><code>NameError: name 'patterns' is not defined</code> (ou outra variável)</dt>
+      <dd>Uma célula anterior não foi executada, ou o Colab reiniciou. Use <em>Ambiente de execução → Executar tudo</em>. As células dependem umas das outras (veja a tabela de variáveis no início).</dd>
+
+      <dt>Erro de leitura dos dados (URL ou <code>FileNotFoundError</code>)</dt>
+      <dd>A pasta <code>data/</code> não existe e o computador está sem internet. Conecte-se e execute a célula 7 de novo.</dd>
+
+      <dt>Gráfico em branco ou repetido</dt>
+      <dd>Execute a célula de novo. Evite <code>plt.close('all')</code> no meio da aula.</dd>
+
+      <dt>Aviso vermelho do seaborn (<code>FutureWarning … palette</code>), célula 31</dt>
+      <dd>É só um aviso de mudança futura de versão. O gráfico sai normalmente.</dd>
+
+      <dt>“Sem LLM disponível” ou relatório com a fonte <code>local</code> mesmo com chave</dt>
+      <dd>Execute a célula 48 (teste de conexão) e leia a mensagem. As causas mais comuns: nome do segredo errado, “Acesso ao notebook” desligado, ou o <b>ID do projeto</b> colado no lugar da chave (a chave começa com <code>AIza</code>). Depois execute de novo a célula 46.</dd>
+
+      <dt>“Limite de uso gratuito atingido”</dt>
+      <dd>É a cota gratuita do Google por minuto/dia. Espere 1 minuto. Se toda a turma usa a mesma chave, o limite acaba mais rápido: cada aluno deve criar a própria.</dd>
+
+      <dt>Perdi meu trabalho</dt>
+      <dd>A sessão do Colab expira por inatividade e nada é salvo no GitHub. Use <em>Arquivo → Salvar uma cópia no Drive</em> para guardar o notebook anotado.</dd>
+
+      <dt>Posso mudar parâmetros?</dt>
+      <dd>Sim, e é recomendável. Bons candidatos: <code>savgol_window</code> e <code>lam</code> (células 21–22), os limiares <code>height_frac</code> e <code>prominence_frac</code> (célula 27), <code>n_neighbors</code> do k-NN, <code>max_depth</code> do Random Forest (célula 38) e <code>alpha</code> do Ridge (célula 52). Depois, compare os resultados.</dd>
+    </dl>
+  </div>
+</section>
+
+<div class="footer">
+  <p><b>Dr. Anuar José Mincache</b> · Semana da Física 2026 · Universidade Estadual de Maringá (UEM)</p>
+  <p>Material do curso: <a href="https://github.com/220719/semana-da-fisica-2025">repositório no GitHub</a> ·
+  <a href="https://colab.research.google.com/github/220719/semana-da-fisica-2025/blob/main/notebooks/Minicurso_IA_Cientifica_DRX.ipynb">abrir o notebook no Colab</a> ·
+  <a href="https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html">slides</a></p>
+  <p>Este guia acompanha a versão do notebook com 54 células (18 de texto e 36 de código). Se o notebook mudar, a numeração dos cartões pode mudar.</p>
+</div>
+
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btnTheme = document.getElementById('btnTheme');
+  var btnAll = document.getElementById('btnAll');
+
+  btnTheme.addEventListener('click', function () {
+    var isDark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia &&
+       window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  });
+
+  var open = false;
+  btnAll.addEventListener('click', function () {
+    open = !open;
+    var items = document.querySelectorAll('details');
+    for (var i = 0; i < items.length; i++) { items[i].open = open; }
+    btnAll.textContent = open ? 'Fechar códigos' : 'Abrir códigos';
+  });
+})();
+</script>
+</body>
+</html>

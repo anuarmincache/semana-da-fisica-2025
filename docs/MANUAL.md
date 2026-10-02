@@ -10,6 +10,7 @@ Material:
 | Slides (por módulo) | [`slides/index.html`](../slides/index.html) |
 | Apresentação (abrir no navegador) | [link direto](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html) |
 | Difratogramas | [`data/Nd_10.csv`](../data/Nd_10.csv) … `Nd_50.csv` |
+| Guia célula por célula (abrir no navegador) | [link direto](https://raw.githack.com/220719/semana-da-fisica-2025/main/docs/guia-celulas.html) |
 
 Não é necessário instalar Python no computador. O caminho oficial da turma é o **Google Colab**.
 
@@ -127,7 +128,7 @@ Use um destes caminhos:
    - [Apresentação completa](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html)
    - [Índice por módulo](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/index.html)
 2. **No seu PC**, depois do clone: clique duas vezes em `slides/apresentacao.html` (precisa de internet para o Reveal.js).
-3. GitHub Pages (`220719.github.io/...`) só funciona depois de ligar Pages em Settings; o workflow ainda falha até isso estar ativo.
+3. GitHub Pages (`220719.github.io/...`) é opcional: só funciona depois de ligar Pages em Settings e rodar o workflow manualmente (Actions → GitHub Pages → Run workflow). Para a turma, use os links do raw.githack acima.
 
 Teclado: setas, `F` tela cheia, `Esc` visão geral.
 
@@ -143,7 +144,11 @@ Para usar Gemini:
 2. No Colab, ícone de **chave** (Secrets) à esquerda.
 3. Nome: `GEMINI_API_KEY` (exatamente assim).
 4. Cole a chave e marque **Notebook access**.
-5. Rode de novo a célula do copiloto.
+5. Rode a célula **Passo 3 — Teste de conexão** (deve terminar com `✅ Gemini respondeu`).
+6. Rode de novo a célula do copiloto: *Fonte da interpretação* passa de `local` para `gemini`.
+7. Opcional: use `perguntar("...")` para conversar sobre os resultados.
+
+O passo a passo completo, com solução de erros, está escrito dentro do notebook (logo abaixo da célula do copiloto). Cada aluno deve criar a própria chave: uma chave única para a turma esgota a cota gratuita e fica exposta.
 
 Alternativa: `OPENAI_API_KEY` (conta OpenAI, uso pago na maior parte dos casos). O notebook tenta Gemini primeiro.
 

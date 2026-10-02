@@ -1185,6 +1185,8 @@ Instalação opcional no Colab (só se for usar Gemini/OpenAI):
 ```
 %pip install -q google-genai openai
 ```
+
+**Passo a passo para ligar o Gemini gratuito:** logo abaixo da célula do copiloto.
 """))
 
 cells.append(code(r"""
@@ -1276,17 +1278,35 @@ def relatorio_local(dossie: dict) -> str:
     return "\n".join(linhas)
 
 
-def _try_gemini(prompt: str, api_key: str) -> str:
+# Modelos tentados em ordem: se um for descontinuado, o próximo é usado.
+# "gemini-flash-latest" é um alias que o Google mantém apontando para o Flash atual.
+GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3.1-flash-lite"]
+
+
+def _garantir_genai():
+    '''Importa o SDK do Gemini; se faltar, instala (leva alguns segundos).'''
     try:
-        from google import genai
-        client = genai.Client(api_key=api_key)
-        r = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
-        return r.text
-    except Exception:
-        import google.generativeai as genai_old
-        genai_old.configure(api_key=api_key)
-        model = genai_old.GenerativeModel("gemini-2.0-flash")
-        return model.generate_content(prompt).text
+        from google import genai  # noqa: F401
+    except ImportError:
+        import importlib
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "google-genai"], check=True)
+        importlib.invalidate_caches()
+
+
+def _try_gemini(prompt: str, api_key: str) -> str:
+    _garantir_genai()
+    from google import genai
+    client = genai.Client(api_key=api_key)
+    erros = []
+    for nome in GEMINI_MODELS:
+        try:
+            r = client.models.generate_content(model=nome, contents=prompt)
+            return r.text
+        except Exception as exc:
+            erros.append(f"[{nome}] {str(exc)[:220]}")
+    raise RuntimeError(" | ".join(erros))
 
 
 def _try_openai(prompt: str, api_key: str) -> str:
@@ -1312,24 +1332,33 @@ def get_secret(name: str):
         return os.environ.get(name)
 
 
-def explicar_com_llm(dossie: dict) -> tuple[str, str]:
-    payload = json.dumps(dossie, ensure_ascii=False, indent=2)
-    prompt = SYSTEM + "\n\nJSON do pipeline:\n" + payload
-
+def _chamar_llm(prompt: str):
+    '''Tenta Gemini e depois OpenAI. Devolve (texto, fonte) ou (None, None).'''
     gem = get_secret("GEMINI_API_KEY") or get_secret("GOOGLE_API_KEY")
     oai = get_secret("OPENAI_API_KEY")
 
     if gem:
         try:
-            return _try_gemini(prompt, gem), "gemini"
+            texto = _try_gemini(prompt, gem.strip())
+            if texto:
+                return texto, "gemini"
         except Exception as exc:
             print("Gemini indisponível:", exc)
     if oai:
         try:
-            return _try_openai(prompt, oai), "openai"
+            return _try_openai(prompt, oai.strip()), "openai"
         except Exception as exc:
             print("OpenAI indisponível:", exc)
-    return relatorio_local(dossie), "local"
+    return None, None
+
+
+def explicar_com_llm(dossie: dict) -> tuple[str, str]:
+    payload = json.dumps(dossie, ensure_ascii=False, indent=2)
+    prompt = SYSTEM + "\n\nJSON do pipeline:\n" + payload
+    texto, fonte = _chamar_llm(prompt)
+    if texto is None:
+        return relatorio_local(dossie), "local"
+    return texto, fonte
 
 
 relatorio, fonte = explicar_com_llm(dossie)
@@ -1338,13 +1367,140 @@ print(relatorio)
 """))
 
 cells.append(md(r"""
-### Segredo no Colab (opcional)
+## Como ligar o LLM externo (Gemini gratuito) — passo a passo
 
-1. Ícone de chave (*Secrets*) → `GEMINI_API_KEY`
-2. Marque **Notebook access** / acesso pelo notebook
-3. Rode de novo a célula do copiloto
+> **Opcional.** Sem chave, o relatório local acima já cobre a aula. Cada aluno cria **a sua própria chave** (não use a de outra pessoa e não existe chave "da turma").
 
-Chave gratuita: [Google AI Studio](https://aistudio.google.com/apikey). Sem chave, o relatório local já cobre a aula. Passo a passo no `docs/MANUAL.md`.
+### Passo 1 — Criar a chave
+1. Abra [aistudio.google.com/apikey](https://aistudio.google.com/apikey) e entre com sua conta Google.
+2. Clique em **Criar chave de API** (*Create API key*). Se pedir um projeto, escolha criar a chave em um projeto novo.
+3. Clique no ícone de **copiar** ao lado da chave. Ela é um texto longo que começa com `AIza`.
+
+O plano gratuito não pede cartão de crédito.
+
+### Passo 2 — Guardar a chave no Colab (Secrets)
+1. Na barra lateral **esquerda** do Colab, clique no ícone de chave 🔑 (**Secrets** / *Segredos*).
+2. Clique em **Adicionar novo segredo**.
+3. Em **Nome**, digite exatamente `GEMINI_API_KEY` (maiúsculas, com sublinhado).
+4. Em **Valor**, cole a chave.
+5. Ligue o botão **Acesso ao notebook** (*Notebook access*) ao lado do segredo. Se ele ficar desligado, o notebook não consegue ler a chave.
+
+### Passo 3 — Testar a conexão
+Execute a célula **abaixo**. Ela deve terminar com `✅ Gemini respondeu`. Se aparecer ❌, leia a mensagem: ela diz o que corrigir.
+
+### Passo 4 — Gerar o relatório com o LLM
+Volte à célula do copiloto (a que termina com `print(relatorio)`) e execute de novo. A linha **Fonte da interpretação** deve mudar de `local` para `gemini`.
+
+### Passo 5 — Conversar sobre os resultados
+Use `perguntar("...")` na célula mais abaixo.
+
+### Cuidados
+- **Nunca** cole a chave dentro de uma célula de código, no GitHub ou em prints de tela.
+- O notebook envia ao Google apenas o resumo numérico dos resultados (o JSON), não os arquivos CSV.
+- O plano gratuito tem limite de uso por minuto e por dia. Se aparecer erro de cota, espere 1 minuto e tente de novo.
+- Trate o texto do LLM como **rascunho**: confira cada número com as tabelas e figuras acima.
+"""))
+
+cells.append(code(r"""
+# Passo 3 — Teste de conexão com o Gemini (nunca imprime a chave).
+def testar_gemini() -> bool:
+    chave = None
+    try:
+        from google.colab import userdata
+        try:
+            chave = userdata.get("GEMINI_API_KEY")
+        except Exception as exc:
+            nome = type(exc).__name__
+            if "NotebookAccess" in nome:
+                print("❌ O segredo existe, mas falta ligar o botão 'Acesso ao notebook' (Passo 2, item 5).")
+            elif "SecretNotFound" in nome:
+                print("❌ Segredo GEMINI_API_KEY não encontrado. Confira o nome e o valor (Passo 2, itens 3 e 4).")
+            else:
+                print(f"❌ Não consegui ler os Secrets ({nome}). Recarregue a página do Colab e tente de novo.")
+            return False
+    except ImportError:
+        chave = os.environ.get("GEMINI_API_KEY")  # uso fora do Colab
+
+    if not chave:
+        print("ℹ️ Nenhuma chave configurada. Tudo bem: o relatório local funciona sem ela.")
+        return False
+
+    chave = chave.strip()
+    print(f"✔ Chave encontrada ({len(chave)} caracteres).")
+    if not chave.startswith("AIza"):
+        print("⚠️ Chaves do AI Studio começam com 'AIza'. Confira se copiou a chave inteira, sem espaços.")
+
+    try:
+        texto = _try_gemini("Responda apenas com a palavra: OK", chave)
+    except Exception as exc:
+        msg = str(exc)
+        if "API_KEY_INVALID" in msg or "API key not valid" in msg:
+            print("❌ A chave foi recusada pelo Google. Copie de novo no AI Studio e cole em Secrets (Passo 1 e 2).")
+        elif "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+            print("❌ Limite de uso gratuito atingido. Espere 1 minuto e execute esta célula de novo.")
+        elif "PERMISSION_DENIED" in msg or "403" in msg:
+            print("❌ Chave sem permissão para este serviço (ou região não suportada). Crie uma nova chave no AI Studio.")
+        elif "NOT_FOUND" in msg or "404" in msg:
+            print("❌ Os modelos da lista GEMINI_MODELS não estão disponíveis. Avise o professor.")
+        else:
+            print("❌ Falha ao falar com o Gemini. Detalhe técnico:")
+        print("   ", msg[:400])
+        return False
+
+    print(f"✅ Gemini respondeu: {(texto or '').strip()[:40]!r}")
+    print("Agora volte à célula do copiloto e execute de novo (Passo 4).")
+    return True
+
+
+testar_gemini();
+"""))
+
+cells.append(md(r"""
+## Perguntar ao copiloto
+
+Com o Gemini ligado (Passos 1 a 4), a função `perguntar("...")` reenvia o **JSON de resultados** junto com a sua pergunta, então a resposta fica ancorada nos números do pipeline. O LLM lembra das últimas perguntas da conversa; use `reiniciar=True` para começar do zero.
+
+Ideias de perguntas:
+
+- `perguntar("Por que o D de Williamson–Hall ficou tão diferente do de Scherrer em Nd 30%?")`
+- `perguntar("O que o R² negativo no Leave-One-Out diz sobre o modelo?")`
+- `perguntar("Quais limitações impedem tirar conclusões físicas com apenas 5 amostras?")`
+
+Lembre: o LLM **não calculou nada**. Se a resposta citar um número, procure-o nas tabelas acima.
+"""))
+
+cells.append(code(r"""
+HISTORICO_CHAT = []  # memória curta da conversa: pares (pergunta, resposta)
+
+
+def perguntar(pergunta: str, reiniciar: bool = False):
+    '''Pergunta ao LLM sobre os resultados deste notebook (precisa da chave: Passos 1 a 4).'''
+    global HISTORICO_CHAT
+    if reiniciar:
+        HISTORICO_CHAT = []
+    payload = json.dumps(dossie, ensure_ascii=False, indent=2)
+    conversa = "".join(f"\nALUNO: {p}\nCOPILOTO: {r}\n" for p, r in HISTORICO_CHAT[-4:])
+    prompt = (
+        SYSTEM
+        + "\n\nAgora é uma conversa. Responda de forma direta e curta (poucos parágrafos) à pergunta do aluno, "
+        "usando somente o JSON abaixo. A estrutura em cinco partes vale só para o relatório completo."
+        + "\n\nJSON do pipeline:\n" + payload
+        + ("\n\nConversa até agora:" + conversa if conversa else "")
+        + f"\n\nPergunta do aluno: {pergunta}"
+    )
+    texto, fonte = _chamar_llm(prompt)
+    if texto is None:
+        print("Sem LLM disponível. Configure a chave (Passos 1 a 4 acima) e tente de novo.")
+        return
+    HISTORICO_CHAT.append((pergunta, texto))
+    try:
+        from IPython.display import Markdown, display
+        display(Markdown(f"**({fonte})**\n\n{texto}"))
+    except Exception:
+        print(texto)
+
+
+perguntar("Por que o R² de Leave-One-Out ficou negativo, e o que isso diz sobre o ML com n=5?")
 """))
 
 cells.append(md(r"""
