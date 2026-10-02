@@ -8,9 +8,9 @@ Material:
 |---|---|
 | Aula prática | [`notebooks/Minicurso_IA_Cientifica_DRX.ipynb`](../notebooks/Minicurso_IA_Cientifica_DRX.ipynb) |
 | Slides (por módulo) | [`slides/index.html`](../slides/index.html) |
-| Apresentação (abrir no navegador) | [link direto](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html) |
+| Apresentação (abrir no navegador) | [link direto](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html) |
 | Difratogramas | [`data/Nd_10.csv`](../data/Nd_10.csv) … `Nd_50.csv` |
-| Guia célula por célula (abrir no navegador) | [link direto](https://raw.githack.com/220719/semana-da-fisica-2025/main/docs/guia-celulas.html) |
+| Guia célula por célula (abrir no navegador) | [link direto](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/docs/guia-celulas.html) |
 
 Não é necessário instalar Python no computador. O caminho oficial da turma é o **Google Colab**.
 
@@ -28,7 +28,7 @@ Não é necessário instalar Python no computador. O caminho oficial da turma é
 
 O material público está em:
 
-**https://github.com/220719/semana-da-fisica-2025**
+**https://github.com/anuarmincache/semana-da-fisica-2025**
 
 Três formas de chegar no código:
 
@@ -45,7 +45,7 @@ Os CSV são baixados sozinhos da pasta `data/` no GitHub. Não precisa montar Dr
 Crie um notebook vazio no Colab e rode:
 
 ```python
-!git clone --depth 1 https://github.com/220719/semana-da-fisica-2025.git
+!git clone --depth 1 https://github.com/anuarmincache/semana-da-fisica-2025.git
 %cd semana-da-fisica-2025
 ```
 
@@ -69,7 +69,7 @@ e abrir o `.ipynb` a partir do navegador de arquivos do Colab (ícone de pasta �
 ### C — Clone local (quem já usa Git)
 
 ```bash
-git clone https://github.com/220719/semana-da-fisica-2025.git
+git clone https://github.com/anuarmincache/semana-da-fisica-2025.git
 cd semana-da-fisica-2025
 ```
 
@@ -125,10 +125,10 @@ Não envie os CSV para um LLM “para ele analisar o espectro”. O pipeline Pyt
 Use um destes caminhos:
 
 1. **Link que já funciona no navegador** (recomendado para a turma):
-   - [Apresentação completa](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html)
-   - [Índice por módulo](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/index.html)
+   - [Apresentação completa](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html)
+   - [Índice por módulo](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/index.html)
 2. **No seu PC**, depois do clone: clique duas vezes em `slides/apresentacao.html` (precisa de internet para o Reveal.js).
-3. GitHub Pages (`220719.github.io/...`) é opcional: só funciona depois de ligar Pages em Settings e rodar o workflow manualmente (Actions → GitHub Pages → Run workflow). Para a turma, use os links do raw.githack acima.
+3. GitHub Pages (`anuarmincache.github.io/...`) é opcional: só funciona depois de ligar Pages em Settings e rodar o workflow manualmente (Actions → GitHub Pages → Run workflow). Para a turma, use os links do raw.githack acima.
 
 Teclado: setas, `F` tela cheia, `Esc` visão geral.
 

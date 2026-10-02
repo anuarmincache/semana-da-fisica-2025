@@ -18,11 +18,11 @@ Minicurso teórico-prático no **Google Colab**: pipeline verificável de DRX + 
 
 | O quê | Clique aqui |
 |---|---|
-| **Slides (apresentação completa)** | [Abrir no navegador](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html) |
-| **Slides por módulo** | [Índice](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/index.html) |
-| **Notebook da aula** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/220719/semana-da-fisica-2025/blob/main/notebooks/Minicurso_IA_Cientifica_DRX.ipynb) |
+| **Slides (apresentação completa)** | [Abrir no navegador](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html) |
+| **Slides por módulo** | [Índice](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/index.html) |
+| **Notebook da aula** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anuarmincache/semana-da-fisica-2025/blob/main/notebooks/Minicurso_IA_Cientifica_DRX.ipynb) |
 | Manual | [docs/MANUAL.md](docs/MANUAL.md) |
-| **Guia célula por célula** | [Abrir no navegador](https://raw.githack.com/220719/semana-da-fisica-2025/main/docs/guia-celulas.html) |
+| **Guia célula por célula** | [Abrir no navegador](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/docs/guia-celulas.html) |
 
 Não abra os arquivos `.html` na página de código do GitHub (`blob/main/slides/...`): isso mostra o fonte, não o slideshow. Use os links da tabela.
 
@@ -70,7 +70,7 @@ Setas do teclado avançam os slides; `F` é tela cheia.
 ## Clone (alunos)
 
 ```bash
-git clone https://github.com/220719/semana-da-fisica-2025.git
+git clone https://github.com/anuarmincache/semana-da-fisica-2025.git
 ```
 
 O nome da pasta no GitHub continua `semana-da-fisica-2025` (histórico do repositório). O minicurso é da **Semana da Física 2026**.

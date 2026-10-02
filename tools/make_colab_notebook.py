@@ -60,7 +60,7 @@ cells.append(md(r"""
 1. Badge **Open in Colab** no `README.md`, **ou** clone (veja `docs/MANUAL.md`).
 2. **CPU** basta. *Ambiente de execução → Executar tudo* (`Ctrl+F9`).
 3. Figuras também são gravadas em `figuras/` (na sessão do Colab: pasta à esquerda → download).
-4. Slides no navegador: [apresentação completa](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html) (não abra o `.html` na página de código do GitHub).
+4. Slides no navegador: [apresentação completa](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html) (não abra o `.html` na página de código do GitHub).
 5. **Módulo 6 (opcional):** Secrets → `GEMINI_API_KEY`. Sem chave, o relatório local já cobre a aula.
 
 Os CSV vêm de `data/` ou do GitHub. **Não é necessário montar o Google Drive.**
@@ -245,7 +245,7 @@ cells.append(code(r"""
 #   1) pasta local data/ (clone do GitHub, ou notebook aberto na raiz do repo)
 #   2) URL raw do GitHub (abrir só o .ipynb no Colab, sem clonar)
 # Nunca assumimos cabeçalho: names= força two_theta e intensity.
-REPO_RAW = "https://raw.githubusercontent.com/220719/semana-da-fisica-2025/main/data"
+REPO_RAW = "https://raw.githubusercontent.com/anuarmincache/semana-da-fisica-2025/main/data"
 LOCAL_DATA = Path("data")
 DOPINGS = [10, 20, 30, 40, 50]
 
@@ -1610,7 +1610,7 @@ O minicurso percorreu:
 
 **Para levar para casa:** se o número não saiu de uma célula de cálculo, ele não entra no artigo — nem quando a frase do LLM estiver convincente.
 
-Material de apoio: [`docs/MANUAL.md`](../docs/MANUAL.md) e [slides no navegador](https://raw.githack.com/220719/semana-da-fisica-2025/main/slides/apresentacao.html).
+Material de apoio: [`docs/MANUAL.md`](../docs/MANUAL.md) e [slides no navegador](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html).
 """))
 
 nb = {
