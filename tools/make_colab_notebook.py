@@ -35,7 +35,8 @@ cells.append(md(r"""
 **Subtítulo:** Construindo um Pipeline Híbrido com Machine Learning e LLMs
 
 **Ministrante:** Dr. Anuar José Mincache  
-**Afiliação:** Pós-doutorado em Física — Lund University (Suécia)  
+**Afiliação:** Professor pesquisador, Universidade Estadual de Maringá (UEM)  
+**Formação:** Pós-doutorado na Suécia em difração de nêutrons e de raios X  
 **Evento:** Semana da Física 2026 — Universidade Estadual de Maringá (UEM)  
 **Formato:** aula teórico-prática · Google Colab · sem instalação local  
 

@@ -6,7 +6,7 @@
 | difratogramas reais | modelos verificáveis | copiloto de interpretação |
 
 > **Semana da Física 2026 — Universidade Estadual de Maringá (UEM)**  
-> Ministrante: **Dr. Anuar José Mincache** (Pós-doutorado em Física — Lund University, Suécia)
+> Ministrante: **Dr. Anuar José Mincache** — Professor pesquisador na Universidade Estadual de Maringá (UEM) · Pós-doutorado na Suécia em difração de nêutrons e de raios X
 
 Minicurso teórico-prático no **Google Colab**: pipeline verificável de DRX + Machine Learning + LLM como **copiloto** (interpretação e relatório). O modelo de linguagem **não substitui** a Física nem calcula 2θ, FWHM ou métricas.
 
