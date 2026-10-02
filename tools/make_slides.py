@@ -328,7 +328,7 @@ M7 = [
         "<h2>Mensagem final</h2>",
         "<p>Se o número não saiu de uma célula de cálculo, ele não entra no artigo — nem quando a frase do LLM estiver convincente.</p>",
         "<p class='small'>Notebook: <code>notebooks/Minicurso_IA_Cientifica_DRX.ipynb</code> · "
-        "Slides: <a href='https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html'>abrir no navegador</a></p>",
+        "Slides: <a href='https://raw.githack.com/anuarmincache/semana-da-fisica-2026/main/slides/apresentacao.html'>abrir no navegador</a></p>",
     ),
 ]
 

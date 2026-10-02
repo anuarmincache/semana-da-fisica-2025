@@ -39,7 +39,7 @@ cells.append(md(r"""
 **Evento:** Semana da Física 2026 — Universidade Estadual de Maringá (UEM)  
 **Formato:** aula teórico-prática · Google Colab · sem instalação local  
 
-**Sistema experimental:** $\mathrm{Bi}_{1-x}\mathrm{Nd}_{x}\mathrm{FeO}_{3}$ (ferrita de bismuto dopada com neodímio), $x$ entre 10% e 50%.
+**Sistema experimental:** Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub> (ferrita de bismuto dopada com neodímio), $x$ entre 10% e 50%.
 
 Este notebook é o material **reformulado** do minicurso. Os cálculos científicos (leitura, pré-processamento, extração de características e Machine Learning) são feitos por **algoritmos verificáveis**. O LLM entra **depois**, como copiloto de interpretação — **não substitui a Física**.
 
@@ -60,7 +60,7 @@ cells.append(md(r"""
 1. Badge **Open in Colab** no `README.md`, **ou** clone (veja `docs/MANUAL.md`).
 2. **CPU** basta. *Ambiente de execução → Executar tudo* (`Ctrl+F9`).
 3. Figuras também são gravadas em `figuras/` (na sessão do Colab: pasta à esquerda → download).
-4. Slides no navegador: [apresentação completa](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html) (não abra o `.html` na página de código do GitHub).
+4. Slides no navegador: [apresentação completa](https://raw.githack.com/anuarmincache/semana-da-fisica-2026/main/slides/apresentacao.html) (não abra o `.html` na página de código do GitHub).
 5. **Módulo 6 (opcional):** Secrets → `GEMINI_API_KEY`. Sem chave, o relatório local já cobre a aula.
 
 Os CSV vêm de `data/` ou do GitHub. **Não é necessário montar o Google Drive.**
@@ -217,7 +217,7 @@ $$
 
 seleciona os planos $\{hkl\}$ que produzem picos em $2\theta$. O arquivo experimental é, em essência, um par $(2\theta,\,I)$.
 
-O material é $\mathrm{Bi}_{1-x}\mathrm{Nd}_{x}\mathrm{FeO}_{3}$. O Nd substitui parcialmente o Bi: isso pode alterar parâmetro de rede, distorções e, em alguns intervalos de $x$, a simetria. No DRX esperamos, *em princípio*:
+O material é Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub>. O Nd substitui parcialmente o Bi: isso pode alterar parâmetro de rede, distorções e, em alguns intervalos de $x$, a simetria. No DRX esperamos, *em princípio*:
 
 - **deslocamento** de picos (mudança de $d_{hkl}$);
 - **mudança de intensidade** (fator de estrutura, ocupação, textura);
@@ -245,7 +245,7 @@ cells.append(code(r"""
 #   1) pasta local data/ (clone do GitHub, ou notebook aberto na raiz do repo)
 #   2) URL raw do GitHub (abrir só o .ipynb no Colab, sem clonar)
 # Nunca assumimos cabeçalho: names= força two_theta e intensity.
-REPO_RAW = "https://raw.githubusercontent.com/anuarmincache/semana-da-fisica-2025/main/data"
+REPO_RAW = "https://raw.githubusercontent.com/anuarmincache/semana-da-fisica-2026/main/data"
 LOCAL_DATA = Path("data")
 DOPINGS = [10, 20, 30, 40, 50]
 
@@ -1601,7 +1601,7 @@ cells.append(md(r"""
 O minicurso percorreu:
 
 1. o conceito de IA científica e a divisão de papéis (algoritmo vs. LLM);
-2. dados reais de DRX de $\mathrm{Bi}_{1-x}\mathrm{Nd}_{x}\mathrm{FeO}_{3}$;
+2. dados reais de DRX de Bi<sub>1−x</sub>Nd<sub>x</sub>FeO<sub>3</sub>;
 3. pré-processamento reproduzível;
 4. características, Scherrer e Williamson–Hall (cristalito e strain);
 5. quatro modelos de regressão, LOO, overfitting, sintéticos com ressalva;
@@ -1610,7 +1610,7 @@ O minicurso percorreu:
 
 **Para levar para casa:** se o número não saiu de uma célula de cálculo, ele não entra no artigo — nem quando a frase do LLM estiver convincente.
 
-Material de apoio: [`docs/MANUAL.md`](../docs/MANUAL.md) e [slides no navegador](https://raw.githack.com/anuarmincache/semana-da-fisica-2025/main/slides/apresentacao.html).
+Material de apoio: [`docs/MANUAL.md`](../docs/MANUAL.md) e [slides no navegador](https://raw.githack.com/anuarmincache/semana-da-fisica-2026/main/slides/apresentacao.html).
 """))
 
 nb = {
